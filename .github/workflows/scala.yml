@@ -25,11 +25,11 @@ jobs:
       run:
         sbt scalafixEnable "scalafixAll --check"
     - name: Sbt Plugin tests
-      run: 
-        sbt clean sbtPlaySwagger/scripted
+      run:
+        sbt clean +playSwagger/publishLocal sbtPlaySwagger/scripted
     - name: Core Lib tests
-      run: 
+      run:
         sbt ';project playSwagger;clean;+test'
     - name: Example compile
-      run: 
+      run:
         sbt publishForExample && cd example && sbt clean scalafmtSbtCheck scalafmtCheckAll scalafixEnable "scalafixAll --check" compile
