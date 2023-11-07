@@ -2,23 +2,32 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val play = "2.8.21"
+    val play = "2.9.0"
     val playJson = "2.10.3"
     val specs2 = "4.20.3"
     val enumeratum = "1.7.3"
     val refined = "0.11.0"
   }
 
-  val playTest: Seq[ModuleID] = Seq(
-    "com.typesafe.play" %% "play-test" % Versions.play % Test
+  def playTest(scalaVersion: String): Seq[ModuleID] = Seq(
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, 12)) => "com.typesafe.play" %% "play-test" % "2.8.20" % Test
+      case _ => "com.typesafe.play" %% "play-test" % Versions.play % Test
+    }
   )
 
-  val playRoutesCompiler: Seq[ModuleID] = Seq(
-    "com.typesafe.play" %% "routes-compiler" % Versions.play
+  def playRoutesCompiler(scalaVersion: String): Seq[ModuleID] = Seq(
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, 12)) => "com.typesafe.play" %% "routes-compiler" % "2.8.20"
+      case _ => "com.typesafe.play" %% "routes-compiler" % "2.9.0-M6" // 暫定
+    }
   )
 
-  val playJson: Seq[ModuleID] = Seq(
-    "com.typesafe.play" %% "play-json" % Versions.playJson % "provided"
+  def playJson(scalaVersion: String): Seq[ModuleID] = Seq(
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, 12)) => "com.typesafe.play" %% "play-json" % "2.10.3" % "provided"
+      case _ => "com.typesafe.play" %% "play-json" % Versions.playJson % "provided"
+    }
   )
 
   val yaml: Seq[ModuleID] = Seq(

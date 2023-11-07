@@ -10,17 +10,19 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
 
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SwaggerPlugin) //enable plugin
 
-scalaVersion := "2.12.18"
+scalaVersion := "2.13.12"
 
 libraryDependencies ++= Seq(
   jdbc,
   cacheApi,
   ws,
   guice,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
-  "org.webjars" % "swagger-ui" % "4.18.1" // play-swagger ui integration
+  "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test,
+  "org.webjars" % "swagger-ui" % "5.9.0" // play-swagger ui integration
 )
 
 scalacOptions ++= Seq("-Xlint:unused")
