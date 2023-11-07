@@ -9,7 +9,7 @@ name := "app"
 
 version := "1.0.1-BETA1"
 
-scalaVersion := "2.12.18"
+scalaVersion := "2.13.12"
 
 swaggerDomainNameSpaces := Seq("namespace1", "namespace2")
 
@@ -70,7 +70,7 @@ TaskKey[Unit]("check") := {
       |            "age":{
       |               "type":"integer",
       |               "format":"int32",
-      |               "description":"expressed in the Western style of counting fully completed years" 
+      |               "description":"expressed in the Western style of counting fully completed years"
       |            },
       |            "birthdate":{
       |               "type":"string",
@@ -162,7 +162,7 @@ TaskKey[Unit]("check") := {
 }
 
 TaskKey[Unit]("unzip1") := {
-  val from = new File(s"target/scala-2.12/app_2.12-${version.value}.jar")
+  val from = new File(s"target/scala-2.13/app_2.13-${version.value}.jar")
   val to = new File("target/jar")
   IO.unzip(from, to)
 }

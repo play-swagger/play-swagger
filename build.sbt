@@ -5,6 +5,7 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.liancheng" %% "organize-imports" % "0.6.0",
   "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3"
 )
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 addCommandAlias(
   "publishForExample",
@@ -30,9 +31,9 @@ lazy val playSwagger = project.in(file("core"))
     Format.settings,
     Testing.settings,
     name := "play-swagger",
-    libraryDependencies ++= Dependencies.playTest ++
-      Dependencies.playRoutesCompiler ++
-      Dependencies.playJson ++
+    libraryDependencies ++= Dependencies.playTest(scalaVersion.value) ++
+      Dependencies.playRoutesCompiler(scalaVersion.value) ++
+      Dependencies.playJson(scalaVersion.value) ++
       Dependencies.enumeratum ++
       Dependencies.refined ++
       Dependencies.test ++
@@ -59,8 +60,8 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     publish / skip := false,
     Publish.coreSettings,
     Format.settings,
-    addSbtPlugin("com.typesafe.sbt" %% "sbt-native-packager" % "1.3.25" % Provided),
-    addSbtPlugin("com.github.sbt" %% "sbt-web" % "1.5.1" % Provided)
+    addSbtPlugin("com.github.sbt" %% "sbt-native-packager" % "1.9.16" % Provided),
+    addSbtPlugin("com.github.sbt" %% "sbt-web" % "1.5.2" % Provided)
   )
   .enablePlugins(BuildInfoPlugin, SbtPlugin)
   .settings(
@@ -70,7 +71,6 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     description := "sbt plugin for play swagger spec generation",
     sbtPlugin := true,
     scalaVersion := scalaV,
-    scripted := scripted.dependsOn(playSwagger / publishLocal).evaluated,
     scriptedLaunchOpts := {
       scriptedLaunchOpts.value ++
         Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
