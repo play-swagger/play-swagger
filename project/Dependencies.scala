@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 object Dependencies {
   object Versions {
     val play = "3.0.0"
