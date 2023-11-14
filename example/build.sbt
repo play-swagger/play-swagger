@@ -2,9 +2,12 @@ name := """example"""
 
 version := "1.0-SNAPSHOT"
 
-scalafixDependencies in ThisBuild ++= Seq(
+ThisBuild / scalafixDependencies ++= Seq(
   "com.github.liancheng" %% "organize-imports" % "0.6.0",
-  "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3"
+  "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
+  "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3",
+  "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
+  "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SwaggerPlugin) //enable plugin
@@ -16,8 +19,8 @@ libraryDependencies ++= Seq(
   cacheApi,
   ws,
   guice,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test,
-  "org.webjars" % "swagger-ui" % "2.2.0" // play-swagger ui integration
+  "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
+  "org.webjars" % "swagger-ui" % "4.18.1" // play-swagger ui integration
 )
 
 scalacOptions ++= Seq("-Xlint:unused")
