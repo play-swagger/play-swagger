@@ -69,7 +69,6 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .settings(
     publish / skip := false,
     Publish.coreSettings,
-    Format.settings,
     addSbtPlugin("com.github.sbt" %% "sbt-native-packager" % "1.9.16" % Provided),
     addSbtPlugin("com.github.sbt" %% "sbt-web" % "1.5.3" % Provided)
   )
