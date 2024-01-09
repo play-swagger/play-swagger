@@ -17,7 +17,7 @@ object ResourceReader {
   }
 
   def read(stream: InputStream): Try[List[String]] = Try {
-    Source.fromInputStream(stream).getLines.toList
+    Source.fromInputStream(stream).getLines().toList
   }
 
 }

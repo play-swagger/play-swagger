@@ -56,12 +56,13 @@ lazy val playSwagger = project.in(file("core"))
           )
       }),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.12", "3.3.1"),
+    scalaVersion := "2.13.12",
+    crossScalaVersions := Seq(scalaV, "2.13.12", "3.3.1"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) => Seq("-Xlint:unused", "-P:semanticdb:synthetics:on")
+      case Some((2, 12)) => Seq("-Xlint:unused")
+      case Some((2, 13)) => Seq("-Wunused", "-P:semanticdb:synthetics:on")
       case _ => Seq("-Wunused:all")
     }) ++ Seq(
       "-deprecation",
@@ -96,6 +97,7 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => Seq("-Xlint:unused", "-P:semanticdb:synthetics:on")
+      case Some((2, 13)) => Seq("-Wunused")
       case _ => Seq("-Wunused:all")
     }) ++ Seq(
       "-deprecation",
