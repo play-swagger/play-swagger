@@ -98,7 +98,7 @@ final case class DefinitionGenerator(
           Map.empty[String, String]
         }
 
-        fields.map { field: Symbol =>
+        fields.map { (field: Symbol) =>
           // TODO: find a better way to get the string representation of typeSignature
           val name = namingConvention(field.name.decodedName.toString)
 

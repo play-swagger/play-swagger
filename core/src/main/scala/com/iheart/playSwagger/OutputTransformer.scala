@@ -10,7 +10,7 @@ import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 trait OutputTransformer extends (JsObject => Try[JsObject]) {
 
   /** alias for `andThen` as defined monadic function */
-  def >=>(b: JsObject => Try[JsObject]): OutputTransformer = SimpleOutputTransformer { value: JsObject =>
+  def >=>(b: JsObject => Try[JsObject]): OutputTransformer = SimpleOutputTransformer { (value: JsObject) =>
     this.apply(value).flatMap(b)
   }
 }

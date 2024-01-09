@@ -25,10 +25,10 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
     csp.specAsParameter match {
       case head :: tail =>
         val w = (
-          (__ \ 'name).write[String] ~
-            (__ \ 'required).write[Boolean] ~
+          (__ \ Symbol("name")).write[String] ~
+            (__ \ Symbol("required")).write[Boolean] ~
             (under \ nullableName).writeNullable[Boolean] ~
-            (under \ 'default).writeNullable[JsValue]
+            (under \ Symbol("default")).writeNullable[JsValue]
         )((c: CustomSwaggerParameter) => (c.name, c.required, c.nullable, c.default))
         (w.writes(csp) ++ withPrefix(head)) :: tail
       // 要素が1つの場合は `elem :: Nil` になるので残りは `Nil` のみ
@@ -82,7 +82,7 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         _5 = p.example,
         _6 = p.referenceType.map(referencePrefix + _),
         _7 = p.items,
-        _8 = p.enum,
+        _8 = p.`enum`,
         _9 = p.description
       )
     }
