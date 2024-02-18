@@ -39,7 +39,6 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.refined ++
       Dependencies.test(scalaVersion.value) ++
       Dependencies.yaml ++ Seq(
-        "org.scalameta" %% "scalameta" % "4.8.15",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
         "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test
