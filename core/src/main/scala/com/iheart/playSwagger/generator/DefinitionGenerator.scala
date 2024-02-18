@@ -1,12 +1,10 @@
 package com.iheart.playSwagger.generator
 
 import scala.collection.JavaConverters
-import scala.meta.internal.parsers.ScaladocParser
 import scala.meta.internal.{Scaladoc => iScaladoc}
 import scala.reflect.runtime.universe._
 
 import com.fasterxml.jackson.databind.{BeanDescription, ObjectMapper}
-import com.github.takezoe.scaladoc.Scaladoc
 import com.iheart.playSwagger.ParametricType
 import com.iheart.playSwagger.domain.Definition
 import com.iheart.playSwagger.domain.parameter.{GenSwaggerParameter, SwaggerParameter}
@@ -72,31 +70,31 @@ final case class DefinitionGenerator(
           case m: MethodSymbol if m.isPrimaryConstructor => m
         }.toList.flatMap(_.paramLists).headOption.getOrElse(Nil)
 
-        val paramDescriptions = if (embedScaladoc) {
-          val scaladoc = for {
-            annotation <- tpe.typeSymbol.annotations
-            if typeOf[Scaladoc] == annotation.tree.tpe
-            value <- annotation.tree.children.tail.headOption
-            docTree <- value.children.tail.headOption
-            docString = docTree.toString().tail.init.replace("\\n", "\n")
-            doc <- ScaladocParser.parse(docString)
-          } yield doc
-
-          (for {
-            doc <- scaladoc
-            paragraph <- doc.para
-            term <- paragraph.terms
-            tag <- term match {
-              case iScaladoc.Tag(iScaladoc.TagType.Param, Some(iScaladoc.Word(key)), Seq(text)) =>
-                Some(key -> text)
-              case _ => None
-            }
-          } yield tag).map {
-            case (name, term) => name -> scalaDocToMarkdown(term).toString
-          }.toMap
-        } else {
-          Map.empty[String, String]
-        }
+//        val paramDescriptions = if (embedScaladoc) {
+//          val scaladoc = for {
+//            annotation <- tpe.typeSymbol.annotations
+//            if typeOf[Scaladoc] == annotation.tree.tpe
+//            value <- annotation.tree.children.tail.headOption
+//            docTree <- value.children.tail.headOption
+//            docString = docTree.toString().tail.init.replace("\\n", "\n")
+//            doc <- ScaladocParser.parse(docString)
+//          } yield doc
+//
+//          (for {
+//            doc <- scaladoc
+//            paragraph <- doc.para
+//            term <- paragraph.terms
+//            tag <- term match {
+//              case iScaladoc.Tag(iScaladoc.TagType.Param, Some(iScaladoc.Word(key)), Seq(text)) =>
+//                Some(key -> text)
+//              case _ => None
+//            }
+//          } yield tag).map {
+//            case (name, term) => name -> scalaDocToMarkdown(term).toString
+//          }.toMap
+//        } else {
+//          Map.empty[String, String]
+//        }
 
         fields.map { (field: Symbol) =>
           // TODO: find a better way to get the string representation of typeSignature
@@ -109,7 +107,7 @@ final case class DefinitionGenerator(
           val typeName = parametricType.resolve(rawTypeName)
           // passing None for 'fixed' and 'default' here, since we're not dealing with route parameters
           val param = Parameter(name, typeName, None, None)
-          mapper.mapParam(param, paramDescriptions.get(field.name.decodedName.toString))
+          mapper.mapParam(param, None)
         }
       }
 

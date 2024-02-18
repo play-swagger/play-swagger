@@ -1,6 +1,6 @@
 package com.iheart.playSwagger.domain.parameter
 
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 class SwaggerParameterWriter(swaggerV3: Boolean) {
 
@@ -58,7 +58,21 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         (under \ "example").writeNullable[JsValue] ~
         (under \ "items").writeNullable[SwaggerParameter](propWrites) ~
         (under \ "enum").writeNullable[Seq[String]]
-    )(unlift(GenSwaggerParameter.unapply))
+    ) { p =>
+      Tuple11(
+        _1 = p.name,
+        _2 = p.required,
+        _3 = p.description,
+        _4 = p.referenceType,
+        _5 = p.`type`,
+        _6 = p.format,
+        _7 = p.nullable,
+        _8 = p.default,
+        _9 = p.example,
+        _10 = p.items,
+        _11 = p.`enum`
+      )
+    }
   }
 
   private val genPropWrites: Writes[GenSwaggerParameter] = {
