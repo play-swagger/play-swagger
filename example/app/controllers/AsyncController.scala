@@ -5,8 +5,8 @@ import javax.inject._
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-import akka.actor.ActorSystem
 import models.Message
+import org.apache.pekko.actor.ActorSystem
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc._
 
