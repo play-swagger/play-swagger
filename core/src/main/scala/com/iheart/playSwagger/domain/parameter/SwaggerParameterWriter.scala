@@ -1,6 +1,6 @@
 package com.iheart.playSwagger.domain.parameter
 
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 class SwaggerParameterWriter(swaggerV3: Boolean) {
 
@@ -25,10 +25,10 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
     csp.specAsParameter match {
       case head :: tail =>
         val w = (
-          (__ \ 'name).write[String] ~
-            (__ \ 'required).write[Boolean] ~
+          (__ \ Symbol("name")).write[String] ~
+            (__ \ Symbol("required")).write[Boolean] ~
             (under \ nullableName).writeNullable[Boolean] ~
-            (under \ 'default).writeNullable[JsValue]
+            (under \ Symbol("default")).writeNullable[JsValue]
         )((c: CustomSwaggerParameter) => (c.name, c.required, c.nullable, c.default))
         (w.writes(csp) ++ withPrefix(head)) :: tail
       // 要素が1つの場合は `elem :: Nil` になるので残りは `Nil` のみ
@@ -58,7 +58,21 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         (under \ "example").writeNullable[JsValue] ~
         (under \ "items").writeNullable[SwaggerParameter](propWrites) ~
         (under \ "enum").writeNullable[Seq[String]]
-    )(unlift(GenSwaggerParameter.unapply))
+    ) { p =>
+      Tuple11(
+        _1 = p.name,
+        _2 = p.required,
+        _3 = p.description,
+        _4 = p.referenceType,
+        _5 = p.`type`,
+        _6 = p.format,
+        _7 = p.nullable,
+        _8 = p.default,
+        _9 = p.example,
+        _10 = p.items,
+        _11 = p.`enum`
+      )
+    }
   }
 
   private val genPropWrites: Writes[GenSwaggerParameter] = {
@@ -82,7 +96,7 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         _5 = p.example,
         _6 = p.referenceType.map(referencePrefix + _),
         _7 = p.items,
-        _8 = p.enum,
+        _8 = p.`enum`,
         _9 = p.description
       )
     }
