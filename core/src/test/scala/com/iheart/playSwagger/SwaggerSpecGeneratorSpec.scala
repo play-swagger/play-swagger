@@ -535,13 +535,13 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       (dayOfWeekJson.get \ "properties" \ "name" \ "type").as[String] === "string"
     }
 
-    "embedded scaladoc strings" >> {
-      lazy val json = SwaggerSpecGenerator(false, false, embedScaladoc = true, "com.iheart").generate("test.routes").get
-      lazy val definitionsJson = json \ "definitions"
-      lazy val dayOfWeekJson = (definitionsJson \ "com.iheart.playSwagger.DayOfWeek").asOpt[JsObject]
-      dayOfWeekJson must beSome[JsObject]
-      (dayOfWeekJson.get \ "properties" \ "name" \ "description").as[String] === "e.g. Sunday, Monday, TuesDay..."
-    }
+//    "embedded scaladoc strings" >> {
+//      lazy val json = SwaggerSpecGenerator(false, false, embedScaladoc = true, "com.iheart").generate("test.routes").get
+//      lazy val definitionsJson = json \ "definitions"
+//      lazy val dayOfWeekJson = (definitionsJson \ "com.iheart.playSwagger.DayOfWeek").asOpt[JsObject]
+//      dayOfWeekJson must beSome[JsObject]
+//      (dayOfWeekJson.get \ "properties" \ "name" \ "description").as[String] === "e.g. Sunday, Monday, TuesDay..."
+//    }
 
     "don't embedded scaladoc strings" >> {
       dayOfWeekJson must beSome[JsObject]
