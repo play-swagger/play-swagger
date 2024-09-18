@@ -44,7 +44,7 @@ lazy val playSwagger = project.in(file("core"))
         "dev.zio" %% "izumi-reflect" % "2.3.9"
       ),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    scalaVersion := "3.3.1",
+    scalaVersion := "3.5.0",
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
