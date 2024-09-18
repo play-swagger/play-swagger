@@ -7,7 +7,6 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
-ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 addCommandAlias(
   "publishForExample",
@@ -37,29 +36,26 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.playJson(scalaVersion.value) ++
       Dependencies.enumeratum ++
       Dependencies.refined ++
-      Dependencies.test ++
+      Dependencies.test(scalaVersion.value) ++
       Dependencies.yaml ++ Seq(
-        "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3",
-        "org.scalameta" %% "scalameta" % "4.8.15",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test
+        "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test,
+        "dev.zio" %% "izumi-reflect" % "2.3.10"
       ),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3"),
-    scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.14"),
+    scalaVersion := "3.5.0",
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Xlint:unused")
+      case Some((2, 12)) => Seq("-Xlint:unused")
+      case Some((2, 13)) => Seq("-Wunused", "-P:semanticdb:synthetics:on")
+      case _ => Seq("-Wunused:all")
     }) ++ Seq(
       "-deprecation",
       "-feature",
       "-Ypatmat-exhaust-depth",
-      "40",
-      "-P:semanticdb:synthetics:on"
+      "40"
     )
   )
 
@@ -87,13 +83,13 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 12)) => Seq("-Xlint:unused", "-P:semanticdb:synthetics:on")
       case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Xlint:unused")
+      case _ => Seq("-Wunused:all")
     }) ++ Seq(
       "-deprecation",
       "-feature",
       "-Ypatmat-exhaust-depth",
-      "40",
-      "-P:semanticdb:synthetics:on"
+      "40"
     )
   )

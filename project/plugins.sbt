@@ -12,3 +12,5 @@ ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" 
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.6.1")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.21")
+
+addSbtPlugin("ch.epfl.scala" % "sbt-scala3-migrate" % "0.6.1")

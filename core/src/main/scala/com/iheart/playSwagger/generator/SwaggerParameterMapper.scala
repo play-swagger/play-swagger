@@ -120,10 +120,12 @@ class SwaggerParameterMapper(
       description: Option[String],
       cl: ClassLoader
   ): MappingFunction = {
-    case JavaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
-    case ScalaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+    case JavaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case ScalaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
     case EnumeratumEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
   }
 
   /**
@@ -186,7 +188,19 @@ class SwaggerParameterMapper(
   def isReference(tpeName: String): Boolean = modelQualifier.isModel(tpeName)
 
   private def referenceParam(referenceType: String)(implicit name: String): GenSwaggerParameter =
-    GenSwaggerParameter(name = name, required = true, referenceType = Some(referenceType))
+    GenSwaggerParameter(
+      name = name,
+      description = None,
+      required = true,
+      referenceType = Some(referenceType),
+      `type` = None,
+      format = None,
+      nullable = None,
+      default = None,
+      example = None,
+      items = None,
+      `enum` = None
+    )
 
   private def optionalParamMF(
       implicit name: String,
