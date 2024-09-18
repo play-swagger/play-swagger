@@ -1,8 +1,6 @@
 package com.iheart.playSwagger.generator
 
 import scala.collection.JavaConverters
-import scala.meta.internal.{Scaladoc => iScaladoc}
-import scala.reflect.runtime.universe._
 
 import com.fasterxml.jackson.databind.{BeanDescription, ObjectMapper}
 import com.iheart.playSwagger.ParametricType
@@ -15,6 +13,8 @@ import net.steppschuh.markdowngenerator.text.Text
 import net.steppschuh.markdowngenerator.text.code.{Code, CodeBlock}
 import net.steppschuh.markdowngenerator.text.heading.Heading
 import play.routes.compiler.Parameter
+
+import izumi.reflect.Tag
 
 final case class DefinitionGenerator(
     mapper: SwaggerParameterMapper,
@@ -144,7 +144,7 @@ final case class DefinitionGenerator(
     }
   }
 
-  def definition[T: TypeTag]: Definition = definition(ParametricType[T])
+  def definition[T: Tag]: Definition = definition(ParametricType[T])
 
   def definition(className: String): Definition = definition(ParametricType(className))
 

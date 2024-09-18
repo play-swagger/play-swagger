@@ -7,7 +7,6 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
-ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 addCommandAlias(
   "publishForExample",
@@ -41,22 +40,11 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.yaml ++ Seq(
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test
-      ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 12)) =>
-          Seq(
-            "com.github.takezoe" % "runtime-scaladoc-reader_2.12" % "1.0.3",
-            "org.scalameta" % "scalameta_2.12" % "4.8.14"
-          )
-        case _ =>
-          Seq(
-            "com.github.takezoe" % "runtime-scaladoc-reader_2.13" % "1.0.3",
-            "org.scalameta" % "scalameta_2.13" % "4.8.14"
-          )
-      }),
+        "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test,
+        "dev.zio" %% "izumi-reflect" % "2.3.9"
+      ),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    scalaVersion := "2.13.12",
-    crossScalaVersions := Seq(scalaV, "2.13.12", "3.3.1"),
+    scalaVersion := "3.3.1",
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {

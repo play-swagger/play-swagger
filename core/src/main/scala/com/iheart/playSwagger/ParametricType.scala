@@ -1,7 +1,6 @@
 package com.iheart.playSwagger
 
 import scala.collection.immutable.SortedMap
-import scala.reflect.runtime.universe._
 import scala.util.matching.Regex
 
 import ParametricType._
