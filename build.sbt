@@ -41,7 +41,7 @@ lazy val playSwagger = project.in(file("core"))
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
         "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test,
-        "dev.zio" %% "izumi-reflect" % "2.3.9"
+        "dev.zio" %% "izumi-reflect" % "2.3.10"
       ),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     scalaVersion := "3.5.0",
