@@ -53,12 +53,13 @@ object SwaggerSpecGenerator {
     )
   }
 
-  def apply(swaggerV3: Boolean, operationIdFully: Boolean, embedScaladoc: Boolean, domainNameSpaces: String*)(implicit
+  def apply(swaggerV3: Boolean, swaggerNoRefSiblings: Boolean, operationIdFully: Boolean, embedScaladoc: Boolean, domainNameSpaces: String*)(implicit
   cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
       modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
       swaggerV3 = swaggerV3,
+      swaggerNoRefSiblings = swaggerNoRefSiblings,
       operationIdFully = operationIdFully,
       embedScaladoc = embedScaladoc
     )
@@ -89,12 +90,13 @@ final case class SwaggerSpecGenerator(
     outputTransformers: Seq[OutputTransformer] = Nil,
     swaggerV3: Boolean = false,
     swaggerPlayJava: Boolean = false,
+    swaggerNoRefSiblings: Boolean = false,
     apiVersion: Option[String] = None,
     operationIdFully: Boolean = false,
     embedScaladoc: Boolean = false
 )(implicit cl: ClassLoader) {
 
-  private val parameterWriter = new SwaggerParameterWriter(swaggerV3)
+  private val parameterWriter = new SwaggerParameterWriter(swaggerV3, swaggerNoRefSiblings)
 
   private def readYmlOrJson[T: Reads](fileName: String): Option[T] = {
     readCfgFile[T](s"$fileName.json") orElse readCfgFile[T](s"$fileName.yml")
