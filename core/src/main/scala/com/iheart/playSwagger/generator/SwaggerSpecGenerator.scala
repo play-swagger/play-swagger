@@ -53,8 +53,13 @@ object SwaggerSpecGenerator {
     )
   }
 
-  def apply(swaggerV3: Boolean, swaggerNoRefSiblings: Boolean, operationIdFully: Boolean, embedScaladoc: Boolean, domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+  def apply(
+      swaggerV3: Boolean,
+      swaggerNoRefSiblings: Boolean,
+      operationIdFully: Boolean,
+      embedScaladoc: Boolean,
+      domainNameSpaces: String*
+  )(implicit cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
       modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
