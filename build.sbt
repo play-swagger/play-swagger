@@ -41,14 +41,14 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.refined ++
       Dependencies.test ++
       Dependencies.yaml ++ Seq(
-        "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3",
+        "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0",
         "org.scalameta" %% "scalameta" % "4.8.5",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.5" % Test,
         "com.google.errorprone" % "error_prone_annotations" % "2.20.0" % Test
       ),
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3"),
+    addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"),
     scalaVersion := scalaV,
     crossScalaVersions := Seq(scalaVersion.value, "2.13.11"),
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {

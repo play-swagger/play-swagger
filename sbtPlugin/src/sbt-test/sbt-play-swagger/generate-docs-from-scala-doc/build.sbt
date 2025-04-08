@@ -21,8 +21,8 @@ swaggerPlayJava := false
 
 embedScaladoc := true
 
-addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3")
-libraryDependencies += "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3"
+addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0")
+libraryDependencies += "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"
 
 val pathVal = System.getenv("PATH")
 
