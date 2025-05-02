@@ -10,13 +10,14 @@ import play.api.libs.json.{JsValue, Json}
 object SwaggerSpecRunner extends App {
   implicit def cl: ClassLoader = getClass.getClassLoader
 
-  val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: Nil =
+  val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: anyValsAsUnderlyingTypeString :: Nil =
     args.toList
   private def fileArg = Paths.get(targetFile)
   private def swaggerJson = {
     val swaggerV3 = java.lang.Boolean.parseBoolean(swaggerV3String)
     val swaggerOperationIdNamingFully = java.lang.Boolean.parseBoolean(operationIdNamingFullyString)
     val embedScaladoc = java.lang.Boolean.parseBoolean(embedScaladocString)
+    val anyValsAsUnderlyingType = java.lang.Boolean.parseBoolean(anyValsAsUnderlyingTypeString)
     val swaggerPlayJava = java.lang.Boolean.parseBoolean(swaggerPlayJavaString)
     val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(","): _*)
     val transformersStrs: Seq[String] = if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",")
@@ -39,7 +40,8 @@ object SwaggerSpecRunner extends App {
       swaggerPlayJava = swaggerPlayJava,
       apiVersion = Some(apiVersion),
       operationIdFully = swaggerOperationIdNamingFully,
-      embedScaladoc = embedScaladoc
+      embedScaladoc = embedScaladoc,
+      anyValsAsUnderlyingType = anyValsAsUnderlyingType
     ).generate(routesFile).get
 
     if (swaggerPrettyJson.toBoolean) Json.prettyPrint(swaggerSpec)

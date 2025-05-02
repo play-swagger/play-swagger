@@ -23,7 +23,8 @@ final case class DefinitionGenerator(
     swaggerPlayJava: Boolean = false,
     _mapper: ObjectMapper = new ObjectMapper(),
     namingConvention: NamingConvention = NamingConvention.None,
-    embedScaladoc: Boolean = false
+    embedScaladoc: Boolean = false,
+    anyValsAsUnderlyingType: Boolean = false
 )(implicit cl: ClassLoader) {
 
   private val refinedTypePattern = raw"(eu\.timepit\.refined\.api\.Refined(?:\[.+])?)".r
@@ -120,7 +121,7 @@ final case class DefinitionGenerator(
 
           val rawType = if (isRefinedType(dealiasedType)) {
             field.info.dealias.typeArgs.head
-          } else if (isAnyValType(dealiasedType)) {
+          } else if (anyValsAsUnderlyingType && isAnyValType(dealiasedType)) {
             extractTypeFromAnyVal(dealiasedType)
           } else {
             dealiasedType

@@ -73,6 +73,14 @@ object SwaggerSpecGenerator {
     )
   }
 
+  def apply(anyValsAsUnderlyingType: Boolean, domainNameSpaces: String*)(implicit
+  cl: ClassLoader): SwaggerSpecGenerator = {
+    SwaggerSpecGenerator(
+      anyValsAsUnderlyingType = anyValsAsUnderlyingType,
+      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*)
+    )
+  }
+
 }
 
 /**
@@ -91,7 +99,8 @@ final case class SwaggerSpecGenerator(
     swaggerPlayJava: Boolean = false,
     apiVersion: Option[String] = None,
     operationIdFully: Boolean = false,
-    embedScaladoc: Boolean = false
+    embedScaladoc: Boolean = false,
+    anyValsAsUnderlyingType: Boolean = false
 )(implicit cl: ClassLoader) {
 
   private val parameterWriter = new SwaggerParameterWriter(swaggerV3)
@@ -109,7 +118,8 @@ final case class SwaggerSpecGenerator(
     mapper = swaggerParameterMapper,
     swaggerPlayJava = swaggerPlayJava,
     namingConvention = namingConvention,
-    embedScaladoc = embedScaladoc
+    embedScaladoc = embedScaladoc,
+    anyValsAsUnderlyingType = anyValsAsUnderlyingType
   )
 
   // routes with their prefix

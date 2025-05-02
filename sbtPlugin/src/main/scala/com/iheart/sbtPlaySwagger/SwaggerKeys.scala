@@ -42,4 +42,10 @@ trait SwaggerKeys {
       "embedScaladoc",
       "Output schema description using scaladoc of case class"
     )
+
+  val anyValsAsUnderlyingType: SettingKey[Boolean] =
+    SettingKey[Boolean](
+      "anyValsAsUnderlyingType",
+      "Output the type of an AnyVal case class as the type of the underlying primitive"
+    )
 }

@@ -7,8 +7,16 @@ import org.specs2.mutable.Specification
 import play.api.libs.json._
 
 import java.time.LocalDate
+import scala.util.Try
 
-case class Track(name: String, genre: Option[String], artist: Artist, related: Seq[Artist], numbers: Seq[Int], length: Length)
+case class Track(
+    name: String,
+    genre: Option[String],
+    artist: Artist,
+    related: Seq[Artist],
+    numbers: Seq[Int],
+    length: Length
+)
 
 case class Artist(name: String, age: Age, spotifyAccount: SpotifyAccount, albums: Albums)
 
@@ -196,10 +204,6 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "read definition from referenceTypes" >> {
       (trackJson \ "properties" \ "name" \ "type").as[String] === "string"
-    }
-
-    "read definition from referenceTypes with any val" >> {
-      (trackJson \ "properties" \ "length" \ "type").as[String] === "integer"
     }
 
     "read schema of referenced type" >> {
@@ -788,6 +792,26 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "properties don't set nullable on non-options" >> {
       (trackJson \ "properties" \ "name" \ "nullable").isEmpty === true
+    }
+  }
+
+  "anyValsAsUnderlyingType" >> {
+    lazy val jsonEnabled = SwaggerSpecGenerator(true, "com.iheart").generate("test.routes").get
+    lazy val jsonDisabled = SwaggerSpecGenerator(false, "com.iheart").generate("test.routes").get
+
+    def definitionsJson(json: JsObject): JsObject = (json \ "definitions").as[JsObject]
+
+    def trackJson(json: JsObject): JsObject = (definitionsJson(json) \ "com.iheart.playSwagger.Track").as[JsObject]
+    def lengthJson(json: JsObject): JsObject = (definitionsJson(json) \ "com.iheart.playSwagger.Length").as[JsObject]
+
+    "reduce an AnyVal case class down to its primitive type when this setting is enabled" >> {
+      (trackJson(jsonEnabled) \ "properties" \ "length" \ "type").as[String] === "integer"
+      Try(lengthJson(jsonEnabled)).toOption === None
+    }
+
+    "return an object modelling the case class when this setting is disabled" >> {
+      (trackJson(jsonDisabled) \ "properties" \ "length" \ "$ref").as[String] === "#/definitions/com.iheart.playSwagger.Length"
+      (lengthJson(jsonDisabled) \ "properties" \ "value" \ "type").as[String] === "integer"
     }
   }
 }
