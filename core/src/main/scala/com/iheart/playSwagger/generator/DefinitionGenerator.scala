@@ -28,6 +28,20 @@ final case class DefinitionGenerator(
 
   private val refinedTypePattern = raw"(eu\.timepit\.refined\.api\.Refined(?:\[.+])?)".r
 
+  private def isRefinedType(tpe: Type): Boolean = {
+    tpe.toString.matches(refinedTypePattern.regex)
+  }
+
+  private def isAnyValType(tpe: Type): Boolean = {
+    tpe <:< typeOf[AnyVal] && tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isDerivedValueClass
+  }
+
+  private def extractTypeFromAnyVal(anyValType: Type): Type = {
+    val constructor = anyValType.decl(termNames.CONSTRUCTOR).asTerm.alternatives.head.asMethod
+    val param = constructor.paramLists.flatten.head
+    param.typeSignatureIn(anyValType)
+  }
+
   private def dealiasParams(t: Type): Type = {
     t.toString match {
       case refinedTypePattern(_) => t.typeArgs.headOption.getOrElse(t)
@@ -102,10 +116,17 @@ final case class DefinitionGenerator(
           // TODO: find a better way to get the string representation of typeSignature
           val name = namingConvention(field.name.decodedName.toString)
 
-          val rawTypeName = dealiasParams(field.typeSignature).toString match {
-            case refinedTypePattern(_) => field.info.dealias.typeArgs.head.toString
-            case v => v
+          val dealiasedType = dealiasParams(field.typeSignature)
+
+          val rawType = if (isRefinedType(dealiasedType)) {
+            field.info.dealias.typeArgs.head
+          } else if (isAnyValType(dealiasedType)) {
+            extractTypeFromAnyVal(dealiasedType)
+          } else {
+            dealiasedType
           }
+
+          val rawTypeName = rawType.toString
           val typeName = parametricType.resolve(rawTypeName)
           // passing None for 'fixed' and 'default' here, since we're not dealing with route parameters
           val param = Parameter(name, typeName, None, None)

@@ -1,14 +1,15 @@
 package com.iheart.playSwagger
 
-import java.time.LocalDate
-
 import com.iheart.playSwagger.RefinedTypes.{Age, Albums, SpotifyAccount}
 import com.iheart.playSwagger.domain.CustomTypeMapping
 import com.iheart.playSwagger.generator.SwaggerSpecGenerator
 import org.specs2.mutable.Specification
 import play.api.libs.json._
 
-case class Track(name: String, genre: Option[String], artist: Artist, related: Seq[Artist], numbers: Seq[Int])
+import java.time.LocalDate
+
+case class Track(name: String, genre: Option[String], artist: Artist, related: Seq[Artist], numbers: Seq[Int], length: Length)
+
 case class Artist(name: String, age: Age, spotifyAccount: SpotifyAccount, albums: Albums)
 
 case class Student(name: String, teacher: Option[Teacher])
@@ -19,6 +20,8 @@ case class Animal(name: String, keeper: Keeper, birthDate: LocalDate, lastChecku
 case class Keeper(internalFieldName1: String, internalFieldName2: Int)
 
 case class Subject(name: String)
+
+case class Length(value: Int) extends AnyVal
 
 /**
   * @param name e.g. Sunday, Monday, TuesDay...
@@ -193,6 +196,10 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "read definition from referenceTypes" >> {
       (trackJson \ "properties" \ "name" \ "type").as[String] === "string"
+    }
+
+    "read definition from referenceTypes with any val" >> {
+      (trackJson \ "properties" \ "length" \ "type").as[String] === "integer"
     }
 
     "read schema of referenced type" >> {
@@ -615,7 +622,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "definitions exposes 'required' array if there are required properties" >> {
-      val requiredFields = Seq("name", "artist", "related", "numbers")
+      val requiredFields = Seq("name", "artist", "related", "numbers", "length")
       (trackJson \ "required").as[Seq[String]] must contain(allOf(requiredFields.toSeq: _*).exactly)
     }
 
