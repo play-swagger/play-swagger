@@ -1,10 +1,5 @@
 package com.iheart.playSwagger.generator
 
-import scala.collection.JavaConverters
-import scala.meta.internal.parsers.ScaladocParser
-import scala.meta.internal.{Scaladoc => iScaladoc}
-import scala.reflect.runtime.universe._
-
 import com.fasterxml.jackson.databind.{BeanDescription, ObjectMapper}
 import com.github.takezoe.scaladoc.Scaladoc
 import com.iheart.playSwagger.ParametricType
@@ -17,6 +12,11 @@ import net.steppschuh.markdowngenerator.text.Text
 import net.steppschuh.markdowngenerator.text.code.{Code, CodeBlock}
 import net.steppschuh.markdowngenerator.text.heading.Heading
 import play.routes.compiler.Parameter
+
+import scala.collection.JavaConverters
+import scala.meta.internal.parsers.ScaladocParser
+import scala.meta.internal.{Scaladoc => iScaladoc}
+import scala.reflect.runtime.universe._
 
 final case class DefinitionGenerator(
     mapper: SwaggerParameterMapper,
@@ -37,10 +37,27 @@ final case class DefinitionGenerator(
     tpe <:< typeOf[AnyVal] && tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isDerivedValueClass
   }
 
+  private def isOption(tpe: Type): Boolean = {
+    tpe.typeConstructor <:< typeOf[Option[_]].typeConstructor
+  }
+
   private def extractTypeFromAnyVal(anyValType: Type): Type = {
     val constructor = anyValType.decl(termNames.CONSTRUCTOR).asTerm.alternatives.head.asMethod
     val param = constructor.paramLists.flatten.head
     param.typeSignatureIn(anyValType)
+  }
+
+  private def convertAnyValToPrimitive(tpe: Type): Type = {
+    if (isAnyValType(tpe)) {
+      extractTypeFromAnyVal(tpe)
+    } else if (isOption(tpe)) {
+      val inner = tpe.typeArgs.head
+      if (isAnyValType(inner)) {
+        appliedType(typeOf[Option[_]].typeConstructor, extractTypeFromAnyVal(inner))
+      } else tpe
+    } else {
+      tpe
+    }
   }
 
   private def dealiasParams(t: Type): Type = {
@@ -121,8 +138,8 @@ final case class DefinitionGenerator(
 
           val rawType = if (isRefinedType(dealiasedType)) {
             field.info.dealias.typeArgs.head
-          } else if (anyValsAsUnderlyingType && isAnyValType(dealiasedType)) {
-            extractTypeFromAnyVal(dealiasedType)
+          } else if (anyValsAsUnderlyingType) {
+            convertAnyValToPrimitive(dealiasedType)
           } else {
             dealiasedType
           }

@@ -15,7 +15,8 @@ case class Track(
     artist: Artist,
     related: Seq[Artist],
     numbers: Seq[Int],
-    length: Length
+    length: Length,
+    description: Option[Description]
 )
 
 case class Artist(name: String, age: Age, spotifyAccount: SpotifyAccount, albums: Albums)
@@ -30,6 +31,8 @@ case class Keeper(internalFieldName1: String, internalFieldName2: Int)
 case class Subject(name: String)
 
 case class Length(value: Int) extends AnyVal
+
+case class Description(value: String) extends AnyVal
 
 /**
   * @param name e.g. Sunday, Monday, TuesDay...
@@ -806,6 +809,12 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "reduce an AnyVal case class down to its primitive type when this setting is enabled" >> {
       (trackJson(jsonEnabled) \ "properties" \ "length" \ "type").as[String] === "integer"
+      Try(lengthJson(jsonEnabled)).toOption === None
+    }
+
+    "reduce an Option[AnyVal] case class down to its primitive type when this setting is enabled" >> {
+      (trackJson(jsonEnabled) \ "properties" \ "description" \ "type").as[String] === "string"
+      (trackJson(jsonEnabled) \ "properties" \ "description" \ "x-nullable").as[Boolean] === true
       Try(lengthJson(jsonEnabled)).toOption === None
     }
 
