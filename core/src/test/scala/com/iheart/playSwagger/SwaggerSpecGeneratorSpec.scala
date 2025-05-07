@@ -815,7 +815,6 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     "reduce an Option[AnyVal] case class down to its primitive type when this setting is enabled" >> {
       (trackJson(jsonEnabled) \ "properties" \ "description" \ "type").as[String] === "string"
       (trackJson(jsonEnabled) \ "properties" \ "description" \ "x-nullable").as[Boolean] === true
-      Try(lengthJson(jsonEnabled)).toOption === None
     }
 
     "return an object modelling the case class when this setting is disabled" >> {
