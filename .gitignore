@@ -22,4 +22,10 @@ project/plugins/project/
 .DS_Store
 .idea
 
+# VSCode / Metals specific
+.bloop
+.metals
+metals.sbt
+.vscode
+
 *.sw*
