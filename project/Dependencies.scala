@@ -38,7 +38,7 @@ object Dependencies {
   )
 
   val refined: Seq[ModuleID] = Seq(
-    "eu.timepit" %% "refined" % Versions.refined % Test
+    "eu.timepit" %% "refined" % Versions.refined
   )
 
   val test: Seq[ModuleID] = Seq(
