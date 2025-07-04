@@ -120,10 +120,10 @@ class SwaggerParameterMapper(
       description: Option[String],
       cl: ClassLoader
   ): MappingFunction = {
-    case JavaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
-    case ScalaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+    case JavaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case ScalaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
     case EnumeratumEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
   }
 
   /**
@@ -131,7 +131,7 @@ class SwaggerParameterMapper(
     */
   private object JavaEnum {
     def unapply(tpeName: String)(implicit cl: ClassLoader): Option[Seq[String]] = {
-      Try(cl.loadClass(tpeName)).toOption.filter(_.isEnum).map(_.getEnumConstants.map(_.toString))
+      Try(cl.loadClass(tpeName)).toOption.filter(_.isEnum).map(_.getEnumConstants.toSeq.map(_.toString))
     }
   }
 
@@ -146,8 +146,8 @@ class SwaggerParameterMapper(
           val mirror = universe.runtimeMirror(cl)
           val module = mirror.reflectModule(mirror.staticModule(tpeName.stripSuffix(".Value")))
           for {
-            enum <- Option(module.instance).toSeq if enum.isInstanceOf[Enumeration]
-            value <- enum.asInstanceOf[Enumeration].values.asInstanceOf[Iterable[Enumeration#Value]]
+            `enum` <- Option(module.instance).toSeq if `enum`.isInstanceOf[Enumeration]
+            value <- `enum`.asInstanceOf[Enumeration].values.asInstanceOf[Iterable[Enumeration#Value]]
           } yield value.toString
         }.toOption.filterNot(_.isEmpty)
       } else None

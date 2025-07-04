@@ -18,8 +18,8 @@ object SwaggerSpecRunner extends App {
     val swaggerOperationIdNamingFully = java.lang.Boolean.parseBoolean(operationIdNamingFullyString)
     val embedScaladoc = java.lang.Boolean.parseBoolean(embedScaladocString)
     val swaggerPlayJava = java.lang.Boolean.parseBoolean(swaggerPlayJavaString)
-    val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(","): _*)
-    val transformersStrs: Seq[String] = if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",")
+    val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(",").toSeq: _*)
+    val transformersStrs: Seq[String] = if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",").toSeq
     val transformers = transformersStrs.map { clazz =>
       Try(cl.loadClass(clazz).asSubclass(classOf[OutputTransformer]).getDeclaredConstructor().newInstance()) match {
         case Failure(ex: ClassCastException) =>

@@ -12,9 +12,9 @@ final case class Definition(
 
 object Definition {
   implicit def writer(implicit paramWriter: Writes[Seq[SwaggerParameter]]): Writes[Definition] = (
-    (__ \ 'description).writeNullable[String] ~
-      (__ \ 'properties).write[Seq[SwaggerParameter]] ~
-      (__ \ 'required).writeNullable[Seq[String]]
+    (__ \ Symbol("description")).writeNullable[String] ~
+      (__ \ Symbol("properties")).write[Seq[SwaggerParameter]] ~
+      (__ \ Symbol("required")).writeNullable[Seq[String]]
   )((d: Definition) => (d.description, d.properties, requiredProperties(d.properties)))
 
   private def requiredProperties(properties: Seq[SwaggerParameter]): Option[Seq[String]] = {
