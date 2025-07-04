@@ -94,7 +94,7 @@ class SwaggerSpecGeneratorSpec extends Specification {
       mappings.size must be_>(2)
       mappings.head.`type` mustEqual "java\\.time\\.LocalDate"
       mappings.head.specAsParameter === List(Json.obj("type" -> "string", "format" -> "date"))
-      mappings.head.specAsProperty must beEmpty
+      mappings.head.specAsProperty must beNone
 
     }
 
@@ -188,7 +188,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "not generate consumes in get" >> {
-      (artistJson \ "consumes").toOption must beEmpty
+      (artistJson \ "consumes").toOption must beNone
     }
 
     "read definition from referenceTypes" >> {
@@ -282,7 +282,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "definition property have no name" >> {
-      (artistDefJson \ "properties" \ "age" \ "name").toOption must beEmpty
+      (artistDefJson \ "properties" \ "age" \ "name").toOption must beNone
     }
 
     "generate post path with consumes" >> {
@@ -304,17 +304,17 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "does not generate for end points marked as hidden" >> {
       "single" >> {
-        (pathJson \ "/api/station/hidden" \ "get").toOption must beEmpty
+        (pathJson \ "/api/station/hidden" \ "get").toOption must beNone
       }
       "can batch skip within a file" >> {
         "multiple-a" >> {
-          (pathJson \ "/api/station/hidden/a" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/a" \ "get").toOption must beNone
         }
         "multiple-b" >> {
-          (pathJson \ "/api/station/hidden/b" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/b" \ "get").toOption must beNone
         }
         "multiple-c" >> {
-          (pathJson \ "/api/station/hidden/c" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/c" \ "get").toOption must beNone
         }
       }
     }
@@ -633,12 +633,12 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "handle multiple levels of includes" >> {
       val tags = (pathJson \ "/level1/level2/level3" \ "get" \ "tags").asOpt[Seq[String]]
-      tags must beSome.which(_ == Seq("level2"))
+      tags mustEqual Some(Seq("level2"))
     }
 
     "hornor the trailing slash" >> {
       val tags = (pathJson \ "/level1/level2/" \ "get" \ "tags").asOpt[Seq[String]]
-      tags must beSome.which(_ == Seq("level2"))
+      tags mustEqual Some(Seq("level2"))
     }
 
     "not contain tags that are empty" >> {
@@ -700,7 +700,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       val lastCheckupProperties = (properties \ "lastCheckup").get
       (lastCheckupProperties \ "x-nullable").as[Boolean] === true
 
-      (definitionsJson \ "com.iheart.playSwagger.Keeper").toOption must beEmpty
+      (definitionsJson \ "com.iheart.playSwagger.Keeper").toOption must beNone
     }
 
     "custom type mappings in definition should be included in required" >> {

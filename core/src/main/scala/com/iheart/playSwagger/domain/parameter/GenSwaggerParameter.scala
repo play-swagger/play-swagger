@@ -2,7 +2,7 @@ package com.iheart.playSwagger.domain.parameter
 
 import play.api.libs.json.JsValue
 
-final case class GenSwaggerParameter private (
+final case class GenSwaggerParameter(
     override val name: String,
     override val required: Boolean,
     override val description: Option[String] = None,

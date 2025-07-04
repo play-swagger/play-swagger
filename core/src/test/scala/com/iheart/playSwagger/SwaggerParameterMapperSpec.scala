@@ -99,7 +99,7 @@ class SwaggerParameterMapperSpec extends Specification {
         name = "javaEnum",
         required = true,
         `type` = Option("string"),
-        enum = Option(Seq("DISABLED", "ACTIVE"))
+        `enum` = Option(Seq("DISABLED", "ACTIVE"))
       )
     }
 
@@ -111,7 +111,7 @@ class SwaggerParameterMapperSpec extends Specification {
         name = "scalaEnum",
         required = true,
         `type` = Option("string"),
-        enum = Option(Seq("One", "Two"))
+        `enum` = Option(Seq("One", "Two"))
       )
     }
 
