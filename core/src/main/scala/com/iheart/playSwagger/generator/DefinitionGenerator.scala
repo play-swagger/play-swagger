@@ -43,7 +43,7 @@ final case class DefinitionGenerator(
 
   private def scalaDocToMarkdown: PartialFunction[iScaladoc.Term, MarkdownElement] = {
     case value: iScaladoc.Text =>
-      new Text(value.parts.map {
+      new Text(value.parts.map(_.part).map {
         case word: iScaladoc.Word => new Text(word.value)
         case link: iScaladoc.Link => new Link(link.anchor.mkString(" "), link.ref)
         case code: iScaladoc.CodeExpr => new Code(code.code)

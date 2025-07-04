@@ -3,7 +3,7 @@ object Dependencies {
   object Versions {
     val play = "3.0.0"
     val playJson = "3.0.1"
-    val specs2 = "4.20.8"
+    val specs2 = "4.21.0"
     val enumeratum = "1.7.4"
     val refined = "0.11.2"
   }
@@ -42,8 +42,7 @@ object Dependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "org.specs2" %% "specs2-core" % Versions.specs2 % "test",
-    "org.specs2" %% "specs2-mock" % Versions.specs2 % "test"
+    "org.specs2" %% "specs2-core" % Versions.specs2 % "test"
   )
 
 }
