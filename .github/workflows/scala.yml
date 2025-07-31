@@ -18,6 +18,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Install sbt
+      uses: sbt/setup-sbt@v1
     - name: Check Format by scalafmt
       run:
         sbt scalafmtSbtCheck scalafmtCheckAll
@@ -25,11 +27,11 @@ jobs:
       run:
         sbt scalafixEnable "scalafixAll --check"
     - name: Sbt Plugin tests
-      run: 
-        sbt clean sbtPlaySwagger/scripted
+      run:
+        sbt clean +playSwagger/publishLocal sbtPlaySwagger/scripted
     - name: Core Lib tests
-      run: 
+      run:
         sbt ';project playSwagger;clean;+test'
     - name: Example compile
-      run: 
+      run:
         sbt publishForExample && cd example && sbt clean scalafmtSbtCheck scalafmtCheckAll scalafixEnable "scalafixAll --check" compile
