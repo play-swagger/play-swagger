@@ -27,6 +27,7 @@ lazy val root = project.in(file("."))
 
 lazy val playSwagger = project.in(file("core"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
@@ -65,6 +66,7 @@ lazy val playSwagger = project.in(file("core"))
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
