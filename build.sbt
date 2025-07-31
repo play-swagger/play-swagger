@@ -1,5 +1,5 @@
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
-ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+ThisBuild / sonatypeCredentialHost := "ossrh-staging-api.central.sonatype.com"
+ThisBuild / sonatypeRepository     := "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 ThisBuild / publish / skip := true
 ThisBuild / scalafixDependencies ++= Seq(
   "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
