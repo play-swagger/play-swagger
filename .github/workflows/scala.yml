@@ -18,6 +18,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Install sbt
+      uses: sbt/setup-sbt@v1
     - name: Check Format by scalafmt
       run:
         sbt scalafmtSbtCheck scalafmtCheckAll

@@ -4,7 +4,7 @@ object Dependencies {
     val play = "3.0.0"
     val playJson = "3.0.1"
     val specs2 = "4.21.0"
-    val enumeratum = "1.7.4"
+    val enumeratum = "1.7.6"
     val refined = "0.11.2"
   }
 
@@ -30,7 +30,7 @@ object Dependencies {
   )
 
   val yaml = Seq(
-    "org.yaml" % "snakeyaml" % "2.3"
+    "org.yaml" % "snakeyaml" % "2.4"
   )
 
   val enumeratum: Seq[ModuleID] = Seq(
