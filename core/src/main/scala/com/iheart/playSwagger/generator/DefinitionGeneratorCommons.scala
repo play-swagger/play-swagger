@@ -2,6 +2,7 @@ package com.iheart.playSwagger.generator
 
 import scala.collection.JavaConverters
 import scala.meta.internal.{Scaladoc => iScaladoc}
+
 import com.fasterxml.jackson.databind.BeanDescription
 import com.iheart.playSwagger.domain.Definition
 import com.iheart.playSwagger.domain.parameter.{GenSwaggerParameter, SwaggerParameter}
