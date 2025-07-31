@@ -5,7 +5,7 @@ object Dependencies {
     val playJson = "3.0.1"
     val specs2 = "4.20.8"
     val enumeratum = "1.7.6"
-    val refined = "0.11.2"
+    val refined = "0.11.3"
   }
 
   def playTest(scalaVersion: String): Seq[ModuleID] = Seq(
