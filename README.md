@@ -518,8 +518,8 @@ Add the required dependencies and Compiler Plugin to `build.sbt` and configure i
 
 ```sbt
 embedScaladoc := true
-addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3")
-libraryDependencies +=  "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.0.3"
+addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0")
+libraryDependencies +=  "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"
 ```
 
 For example, a case class might be written as follows.

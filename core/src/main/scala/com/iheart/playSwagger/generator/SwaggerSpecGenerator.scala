@@ -155,7 +155,7 @@ final case class SwaggerSpecGenerator(
               }
               Failure(new RoutesParseException(detail))
             },
-            { rules: Seq[Rule] =>
+            { (rules: Seq[Rule]) =>
               val tag = tagFromFile(routesFile)
               val init: RoutesData = Success(ListMap(tag -> (path, Seq.empty)))
               rules.foldLeft(init) {

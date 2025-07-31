@@ -1,6 +1,5 @@
 package com.iheart.playSwagger.generator
 
-import scala.reflect.runtime.universe
 import scala.util.Try
 import scala.util.matching.Regex
 
@@ -120,10 +119,12 @@ class SwaggerParameterMapper(
       description: Option[String],
       cl: ClassLoader
   ): MappingFunction = {
-    case JavaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
-    case ScalaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+    case JavaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case ScalaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
     case EnumeratumEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, enum = Option(enumConstants))
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
   }
 
   /**
@@ -131,7 +132,7 @@ class SwaggerParameterMapper(
     */
   private object JavaEnum {
     def unapply(tpeName: String)(implicit cl: ClassLoader): Option[Seq[String]] = {
-      Try(cl.loadClass(tpeName)).toOption.filter(_.isEnum).map(_.getEnumConstants.map(_.toString))
+      Try(cl.loadClass(tpeName)).toOption.filter(_.isEnum).map(_.getEnumConstants.toSeq.map(_.toString))
     }
   }
 
@@ -143,12 +144,11 @@ class SwaggerParameterMapper(
     def unapply(tpeName: String)(implicit cl: ClassLoader): Option[Seq[String]] = {
       if (tpeName.endsWith(".Value")) {
         Try {
-          val mirror = universe.runtimeMirror(cl)
-          val module = mirror.reflectModule(mirror.staticModule(tpeName.stripSuffix(".Value")))
-          for {
-            enum <- Option(module.instance).toSeq if enum.isInstanceOf[Enumeration]
-            value <- enum.asInstanceOf[Enumeration].values.asInstanceOf[Iterable[Enumeration#Value]]
-          } yield value.toString
+          val companionClass = cl.loadClass(tpeName.stripSuffix(".Value") + "$")
+          val singleton = companionClass.getField("MODULE$").get(companionClass)
+          val valuesMethod = companionClass.getMethod("values")
+          val values = valuesMethod.invoke(singleton).asInstanceOf[Iterable[AnyRef]]
+          values.map(_.toString).toSeq
         }.toOption.filterNot(_.isEmpty)
       } else None
     }
