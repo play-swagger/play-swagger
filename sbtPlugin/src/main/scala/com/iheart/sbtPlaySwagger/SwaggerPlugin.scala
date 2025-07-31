@@ -35,6 +35,7 @@ object SwaggerPlugin extends AutoPlugin {
     swaggerAPIVersion := version.value,
     swaggerPrettyJson := false,
     swaggerPlayJava := false,
+    swaggerNoRefSiblings := true,
     swaggerNamingStrategy := "none",
     swaggerOperationIdNamingFully := false,
     embedScaladoc := false,
@@ -49,6 +50,7 @@ object SwaggerPlugin extends AutoPlugin {
         swaggerAPIVersion.value ::
         swaggerPrettyJson.value.toString ::
         swaggerPlayJava.value.toString ::
+        swaggerNoRefSiblings.value.toString ::
         swaggerNamingStrategy.value ::
         swaggerOperationIdNamingFully.value.toString ::
         embedScaladoc.value.toString ::

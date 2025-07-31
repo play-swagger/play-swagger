@@ -10,7 +10,7 @@ import play.api.libs.json.{JsValue, Json}
 object SwaggerSpecRunner extends App {
   implicit def cl: ClassLoader = getClass.getClassLoader
 
-  val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: Nil =
+  val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: swaggerNoRefSiblingsString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: Nil =
     args.toList
   private def fileArg = Paths.get(targetFile)
   private def swaggerJson = {
@@ -18,6 +18,7 @@ object SwaggerSpecRunner extends App {
     val swaggerOperationIdNamingFully = java.lang.Boolean.parseBoolean(operationIdNamingFullyString)
     val embedScaladoc = java.lang.Boolean.parseBoolean(embedScaladocString)
     val swaggerPlayJava = java.lang.Boolean.parseBoolean(swaggerPlayJavaString)
+    val swaggerNoRefSiblings = java.lang.Boolean.parseBoolean(swaggerNoRefSiblingsString)
     val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(","): _*)
     val transformersStrs: Seq[String] = if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",")
     val transformers = transformersStrs.map { clazz =>
@@ -37,6 +38,7 @@ object SwaggerSpecRunner extends App {
       outputTransformers = transformers,
       swaggerV3 = swaggerV3,
       swaggerPlayJava = swaggerPlayJava,
+      swaggerNoRefSiblings = swaggerNoRefSiblings,
       apiVersion = Some(apiVersion),
       operationIdFully = swaggerOperationIdNamingFully,
       embedScaladoc = embedScaladoc
