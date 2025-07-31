@@ -58,7 +58,7 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         (under \ "example").writeNullable[JsValue] ~
         (under \ "items").writeNullable[SwaggerParameter](propWrites) ~
         (under \ "enum").writeNullable[Seq[String]]
-    ) { p =>    
+    ) { p =>
       (
         p.name,
         p.required,
@@ -70,7 +70,7 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         p.default,
         p.example,
         p.items,
-        p.`enum`,
+        p.`enum`
       )
     }
   }

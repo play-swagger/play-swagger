@@ -12,7 +12,7 @@ object SwaggerSpecRunner {
     implicit def cl: ClassLoader = getClass.getClassLoader
 
     val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: Nil =
-      args.toList : @unchecked
+      args.toList: @unchecked
     def fileArg = Paths.get(targetFile)
     def swaggerJson = {
       val swaggerV3 = java.lang.Boolean.parseBoolean(swaggerV3String)
@@ -20,7 +20,8 @@ object SwaggerSpecRunner {
       val embedScaladoc = java.lang.Boolean.parseBoolean(embedScaladocString)
       val swaggerPlayJava = java.lang.Boolean.parseBoolean(swaggerPlayJavaString)
       val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(",").toSeq: _*)
-      val transformersStrs: Seq[String] = if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",").toSeq
+      val transformersStrs: Seq[String] =
+        if (outputTransformersArgs.isEmpty) Seq() else outputTransformersArgs.split(",").toSeq
       val transformers = transformersStrs.map { clazz =>
         Try(cl.loadClass(clazz).asSubclass(classOf[OutputTransformer]).getDeclaredConstructor().newInstance()) match {
           case Failure(ex: ClassCastException) =>

@@ -119,8 +119,10 @@ class SwaggerParameterMapper(
       description: Option[String],
       cl: ClassLoader
   ): MappingFunction = {
-    case JavaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
-    case ScalaEnum(enumConstants) => GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case JavaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case ScalaEnum(enumConstants) =>
+      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
     case EnumeratumEnum(enumConstants) =>
       GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
   }
