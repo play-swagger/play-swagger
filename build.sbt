@@ -1,5 +1,10 @@
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+ThisBuild / publishTo := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
 ThisBuild / publish / skip := true
 ThisBuild / scalafixDependencies ++= Seq(
   "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
@@ -7,6 +12,7 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
+
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 addCommandAlias(
@@ -27,6 +33,7 @@ lazy val root = project.in(file("."))
 
 lazy val playSwagger = project.in(file("core"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
@@ -65,6 +72,7 @@ lazy val playSwagger = project.in(file("core"))
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
