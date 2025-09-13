@@ -1,5 +1,10 @@
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+ThisBuild / publishTo := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
 ThisBuild / publish / skip := true
 ThisBuild / scalafixDependencies ++= Seq(
   "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
@@ -7,6 +12,7 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
 )
+
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 addCommandAlias(
@@ -27,6 +33,7 @@ lazy val root = project.in(file("."))
 
 lazy val playSwagger = project.in(file("core"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
@@ -43,7 +50,7 @@ lazy val playSwagger = project.in(file("core"))
         "org.scalameta" %% "scalameta" % "4.12.7",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.32.0" % Test
+      "com.google.errorprone" % "error_prone_annotations" % "2.41.0" % Test
       ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
         case _ => Seq.empty
@@ -51,7 +58,7 @@ lazy val playSwagger = project.in(file("core"))
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"),
     scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.14", "3.3.5"),
+    crossScalaVersions := Seq(scalaVersion.value, "2.13.16", "3.3.5"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
@@ -69,6 +76,7 @@ lazy val playSwagger = project.in(file("core"))
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .enablePlugins(GitBranchPrompt)
+  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
