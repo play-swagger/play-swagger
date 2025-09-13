@@ -2,7 +2,7 @@ package com.iheart.playSwagger.domain.parameter
 
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json._
-class SwaggerParameterWriter(swaggerV3: Boolean) {
+class SwaggerParameterWriter(swaggerV3: Boolean, swaggerNoRefSiblings: Boolean) {
 
   private val nullableName: String = if (swaggerV3) "nullable" else "x-nullable"
 
@@ -11,8 +11,13 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
   val referencePrefix: String = if (swaggerV3) "#/components/schemas/" else "#/definitions/"
 
   private lazy val propWrites: Writes[SwaggerParameter] = Writes {
-    case g: GenSwaggerParameter => genPropWrites.writes(g)
-    case c: CustomSwaggerParameter => customPropWrites.writes(c)
+    case g: GenSwaggerParameter =>
+      if (swaggerNoRefSiblings)
+        genPropWritesWithAllOf.writes(g)
+      else
+        genPropWrites.writes(g)
+    case c: CustomSwaggerParameter =>
+      customPropWrites.writes(c)
   }
 
   private val customPropWrites: Writes[CustomSwaggerParameter] = Writes { cwp =>
@@ -25,10 +30,10 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
     csp.specAsParameter match {
       case head :: tail =>
         val w = (
-          (__ \ 'name).write[String] ~
-            (__ \ 'required).write[Boolean] ~
+          (__ \ "name").write[String] ~
+            (__ \ "required").write[Boolean] ~
             (under \ nullableName).writeNullable[Boolean] ~
-            (under \ 'default).writeNullable[JsValue]
+            (under \ "default").writeNullable[JsValue]
         )((c: CustomSwaggerParameter) => (c.name, c.required, c.nullable, c.default))
         (w.writes(csp) ++ withPrefix(head)) :: tail
       // 要素が1つの場合は `elem :: Nil` になるので残りは `Nil` のみ
@@ -59,6 +64,28 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         (under \ "items").writeNullable[SwaggerParameter](propWrites) ~
         (under \ "enum").writeNullable[Seq[String]]
     )(unlift(GenSwaggerParameter.unapply))
+  }
+
+  private val genPropWritesWithAllOf: Writes[GenSwaggerParameter] = Writes { gsp =>
+    def wrapRefInAllOf(jsObject: JsObject): JsObject = {
+      val transformedJsObject = for {
+        ref <- jsObject.transform((__ \ "$ref").json.pickBranch)
+        obj <-
+          jsObject.transform(__.json.update((__ \ "allOf").json.put(Json.arr(ref))).andThen((__ \ "$ref").json.prune))
+      } yield obj
+
+      transformedJsObject.asOpt.getOrElse(jsObject)
+    }
+
+    val jsValue = genPropWrites.writes(gsp)
+
+    jsValue.asOpt[JsObject].map { jsObject =>
+      // Wrapping the '$ref' key in an 'allOf' is only required if '$ref' has siblings
+      if (jsObject.keys.size > 1)
+        wrapRefInAllOf(jsObject)
+      else
+        jsObject
+    }.getOrElse(jsValue)
   }
 
   private val genPropWrites: Writes[GenSwaggerParameter] = {
