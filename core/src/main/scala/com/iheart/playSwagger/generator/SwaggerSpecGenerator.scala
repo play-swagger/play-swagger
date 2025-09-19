@@ -419,7 +419,7 @@ final case class SwaggerSpecGenerator(
 
     // コントローラー名とメソッド名、もしくはメソッド名のみから operationId を取得する
     val operationId = Json.obj(
-      "operationId" -> (if (operationIdFully) s"${route.call.controller}.${route.call.method}" else route.call.method)
+      "operationId" -> (if (operationIdFully) s"${route.verb.value.toLowerCase}.${route.call.controller}.${route.call.method}" else route.call.method)
     )
 
     // operationId, tag, parameter object, コメントから生成されたその他の情報をマージする
