@@ -88,9 +88,14 @@ addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "1.6.1")
 addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "1.7.0")
 ```
 
-3. For play 3.0, Scala 2.13.x please use (Code is in branch 2.0.0 and scala 3 is not supported)
+3. For play 3.0, Scala 2.13.x please use (Code is in branch 2.0.0)
 ```scala
 addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "2.0.0")
+```
+
+3. For play 3.0, Scala 3.3.x please use (Code is in branch 3.0.0)
+```scala
+addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.0.0")
 ```
 
 Then enable it for your Play app - in build.sbt add `SwaggerPlugin` to the root project like
