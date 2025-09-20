@@ -506,8 +506,8 @@ responses:
 
 #### Duplicate operationId?
 
-It can be configured in `build.sbt`. 
-This setting allows you to set the `${controllerName}.${methodName}` to name the operationId.
+It can be configured in `build.sbt`.
+This setting allows you to set the `{httpMethodName}.${controllerName}.${methodName}` to name the operationId.
 
 ```sbt
 swaggerOperationIdNamingFully := true
