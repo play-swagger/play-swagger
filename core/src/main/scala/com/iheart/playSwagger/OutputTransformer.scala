@@ -10,13 +10,13 @@ import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 trait OutputTransformer extends (JsObject => Try[JsObject]) {
 
   /** alias for `andThen` as defined monadic function */
-  def >=>(b: JsObject => Try[JsObject]): OutputTransformer = SimpleOutputTransformer { value: JsObject =>
+  def >=>(b: JsObject => Try[JsObject]): OutputTransformer = SimpleOutputTransformer { (value: JsObject) =>
     this.apply(value).flatMap(b)
   }
 }
 
 object OutputTransformer {
-  final case class SimpleOutputTransformer(run: (JsObject => Try[JsObject])) extends OutputTransformer {
+  final case class SimpleOutputTransformer(run: JsObject => Try[JsObject]) extends OutputTransformer {
     override def apply(value: JsObject): Try[JsObject] = run(value)
   }
 
@@ -55,7 +55,7 @@ object OutputTransformer {
   }
 }
 
-class PlaceholderVariablesTransformer(map: String => Option[String], pattern: Regex = "^\\$\\{(.*)\\}$".r)
+class PlaceholderVariablesTransformer(map: String => Option[String], pattern: Regex = ("^\\$\\{(.*)\\}$").r)
     extends OutputTransformer {
   def apply(value: JsObject): Try[JsObject] = OutputTransformer.traverseTransformer(value) {
     case JsString(pattern(key)) => map(key) match {
