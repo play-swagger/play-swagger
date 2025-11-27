@@ -2,8 +2,9 @@ package com.iheart.playSwagger
 
 import java.time.LocalDate
 
-import com.iheart.playSwagger.Domain.CustomMappings
 import com.iheart.playSwagger.RefinedTypes.{Age, Albums, SpotifyAccount}
+import com.iheart.playSwagger.domain.CustomTypeMapping
+import com.iheart.playSwagger.generator.SwaggerSpecGenerator
 import org.specs2.mutable.Specification
 import play.api.libs.json._
 
@@ -87,18 +88,18 @@ class SwaggerSpecGeneratorSpec extends Specification {
 
   "getCfgFile" >> {
     "valid swagger-custom-mappings yml" >> {
-      val result = gen.readCfgFile[CustomMappings]("swagger-custom-mappings.yml")
-      result must beSome[CustomMappings]
+      val result = gen.readCfgFile[Seq[CustomTypeMapping]]("swagger-custom-mappings.yml")
+      result must beSome[Seq[CustomTypeMapping]]
       val mappings = result.get
       mappings.size must be_>(2)
       mappings.head.`type` mustEqual "java\\.time\\.LocalDate"
       mappings.head.specAsParameter === List(Json.obj("type" -> "string", "format" -> "date"))
-      mappings.head.specAsProperty must beEmpty
+      mappings.head.specAsProperty must beNone
 
     }
 
     "invalid swagger-settings yml" >> {
-      gen.readCfgFile[CustomMappings]("swagger-custom-mappings_invalid.yml") must throwA[JsResultException]
+      gen.readCfgFile[Seq[CustomTypeMapping]]("swagger-custom-mappings_invalid.yml") must throwA[JsResultException]
     }
   }
 
@@ -187,7 +188,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "not generate consumes in get" >> {
-      (artistJson \ "consumes").toOption must beEmpty
+      (artistJson \ "consumes").toOption must beNone
     }
 
     "read definition from referenceTypes" >> {
@@ -201,13 +202,13 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "read seq of referenced type" >> {
-      val relatedProp = (trackJson \ "properties" \ "related")
+      val relatedProp = trackJson \ "properties" \ "related"
       (relatedProp \ "type").asOpt[String] === Some("array")
       (relatedProp \ "items" \ "$ref").asOpt[String] === Some("#/definitions/com.iheart.playSwagger.Artist")
     }
 
     "read seq of primitive type" >> {
-      val numberProps = (trackJson \ "properties" \ "numbers")
+      val numberProps = trackJson \ "properties" \ "numbers"
       (numberProps \ "type").asOpt[String] === Some("array")
       (numberProps \ "items" \ "type").asOpt[String] === Some("integer")
     }
@@ -281,7 +282,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     }
 
     "definition property have no name" >> {
-      (artistDefJson \ "properties" \ "age" \ "name").toOption must beEmpty
+      (artistDefJson \ "properties" \ "age" \ "name").toOption must beNone
     }
 
     "generate post path with consumes" >> {
@@ -303,17 +304,17 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "does not generate for end points marked as hidden" >> {
       "single" >> {
-        (pathJson \ "/api/station/hidden" \ "get").toOption must beEmpty
+        (pathJson \ "/api/station/hidden" \ "get").toOption must beNone
       }
       "can batch skip within a file" >> {
         "multiple-a" >> {
-          (pathJson \ "/api/station/hidden/a" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/a" \ "get").toOption must beNone
         }
         "multiple-b" >> {
-          (pathJson \ "/api/station/hidden/b" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/b" \ "get").toOption must beNone
         }
         "multiple-c" >> {
-          (pathJson \ "/api/station/hidden/c" \ "get").toOption must beEmpty
+          (pathJson \ "/api/station/hidden/c" \ "get").toOption must beNone
         }
       }
     }
@@ -615,7 +616,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "definitions exposes 'required' array if there are required properties" >> {
       val requiredFields = Seq("name", "artist", "related", "numbers")
-      (trackJson \ "required").as[Seq[String]] must contain(allOf(requiredFields: _*).exactly)
+      (trackJson \ "required").as[Seq[String]] must contain(allOf(requiredFields.toSeq: _*).exactly)
     }
 
     "definitions does not expose 'required' array if there are no required properties" >> {
@@ -632,12 +633,12 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "handle multiple levels of includes" >> {
       val tags = (pathJson \ "/level1/level2/level3" \ "get" \ "tags").asOpt[Seq[String]]
-      tags must beSome.which(_ == Seq("level2"))
+      tags mustEqual Some(Seq("level2"))
     }
 
     "hornor the trailing slash" >> {
       val tags = (pathJson \ "/level1/level2/" \ "get" \ "tags").asOpt[Seq[String]]
-      tags must beSome.which(_ == Seq("level2"))
+      tags mustEqual Some(Seq("level2"))
     }
 
     "not contain tags that are empty" >> {
@@ -699,7 +700,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       val lastCheckupProperties = (properties \ "lastCheckup").get
       (lastCheckupProperties \ "x-nullable").as[Boolean] === true
 
-      (definitionsJson \ "com.iheart.playSwagger.Keeper").toOption must beEmpty
+      (definitionsJson \ "com.iheart.playSwagger.Keeper").toOption must beNone
     }
 
     "custom type mappings in definition should be included in required" >> {
@@ -716,7 +717,7 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
     "fully operation id" >> {
       lazy val json = SwaggerSpecGenerator(false, true, false, "com.iheart").generate("test.routes").get
       lazy val addTrackJson = (json \ "paths" \ "/api/station/playedTracks" \ "post").as[JsObject]
-      (addTrackJson \ "operationId").as[String] ==== "LiveMeta.addPlayedTracks"
+      (addTrackJson \ "operationId").as[String] ==== "post.LiveMeta.addPlayedTracks"
     }
 
     "should maintain route file order" >> {
