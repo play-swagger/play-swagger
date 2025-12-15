@@ -20,7 +20,7 @@ addCommandAlias(
   ";set ThisBuild / version := \"0.0.1-EXAMPLE\"; +publishLocal"
 )
 
-lazy val scalaV = "2.12.20"
+lazy val scalaV = "2.12.21"
 
 lazy val root = project.in(file("."))
   .aggregate(playSwagger, sbtPlaySwagger)
@@ -58,7 +58,7 @@ lazy val playSwagger = project.in(file("core"))
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"),
     scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.17", "3.3.5"),
+    crossScalaVersions := Seq(scalaVersion.value, "2.13.18", "3.3.7"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
