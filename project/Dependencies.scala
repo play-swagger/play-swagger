@@ -1,7 +1,7 @@
 import sbt._
 object Dependencies {
   object Versions {
-    val play = "3.0.0"
+    val play = "3.0.9"
     val playJson = "3.0.1"
     val specs2 = "4.21.0"
     val enumeratum = "1.7.6"
