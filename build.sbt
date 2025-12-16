@@ -49,7 +49,7 @@ lazy val playSwagger = project.in(file("core"))
         "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0",
         "org.scalameta" %% "scalameta" % "4.12.7",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
-        "joda-time" % "joda-time" % "2.12.7" % Test,
+        "joda-time" % "joda-time" % "2.14.0" % Test,
         "com.google.errorprone" % "error_prone_annotations" % "2.44.0" % Test
       ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
