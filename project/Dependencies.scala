@@ -24,7 +24,7 @@ object Dependencies {
 
   def playJson(scalaVersion: String): Seq[ModuleID] = Seq(
     CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => "com.typesafe.play" %% "play-json" % "2.10.3" % "provided"
+      case Some((2, 12)) => "com.typesafe.play" %% "play-json" % "2.10.8" % "provided"
       case _ => "org.playframework" %% "play-json" % Versions.playJson % "provided"
     }
   )
