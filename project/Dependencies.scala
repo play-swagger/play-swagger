@@ -10,14 +10,14 @@ object Dependencies {
 
   def playTest(scalaVersion: String): Seq[ModuleID] = Seq(
     CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => "com.typesafe.play" %% "play-test" % "2.8.20" % Test
+      case Some((2, 12)) => "com.typesafe.play" %% "play-test" % "2.8.22" % Test
       case _ => "org.playframework" %% "play-test" % Versions.play % Test
     }
   )
 
   def playRoutesCompiler(scalaVersion: String): Seq[ModuleID] = Seq(
     CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 12)) => "com.typesafe.play" %% "routes-compiler" % "2.8.20"
+      case Some((2, 12)) => "com.typesafe.play" %% "routes-compiler" % "2.8.22"
       case _ => "org.playframework" %% "play-routes-compiler" % Versions.play
     }
   )
