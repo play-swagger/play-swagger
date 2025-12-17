@@ -10,7 +10,7 @@ ThisBuild / scalafixDependencies ++= Seq(
   "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
   "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3",
   "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
-  "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
+  "com.github.jatcwang" %% "scalafix-named-params" % "0.2.6"
 )
 
 ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
@@ -47,10 +47,10 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.test ++
       Dependencies.yaml ++ Seq(
         "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0",
-        "org.scalameta" %% "scalameta" % "4.12.7",
+        "org.scalameta" %% "scalameta" % "4.14.2",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.44.0" % Test
+        "com.google.errorprone" % "error_prone_annotations" % "2.45.0" % Test
       ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
         case _ => Seq.empty
@@ -80,7 +80,7 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .settings(
     publish / skip := false,
     Publish.coreSettings,
-    addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.10.0" % Provided),
+    addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.10.4" % Provided),
     addSbtPlugin("com.github.sbt" %% "sbt-web" % "1.5.8" % Provided)
   )
   .enablePlugins(BuildInfoPlugin, SbtPlugin)
