@@ -22,7 +22,7 @@ import play.api.mvc._
   */
 @Singleton
 class AsyncController @Inject() (actorSystem: ActorSystem, components: ControllerComponents)(implicit
-exec: ExecutionContext) extends AbstractController(components) {
+    exec: ExecutionContext) extends AbstractController(components) {
   implicit val fmt: OFormat[Message] = Json.format[Message]
 
   /**

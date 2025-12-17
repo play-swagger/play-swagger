@@ -33,7 +33,7 @@ object SwaggerSpecGenerator {
   private val baseSpecFileName = "swagger"
 
   def apply(namingConvention: NamingConvention, swaggerV3: Boolean, domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = namingConvention,
       modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
@@ -54,7 +54,7 @@ object SwaggerSpecGenerator {
   }
 
   def apply(swaggerV3: Boolean, operationIdFully: Boolean, embedScaladoc: Boolean, domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
       modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
@@ -65,7 +65,7 @@ object SwaggerSpecGenerator {
   }
 
   def apply(outputTransformers: Seq[OutputTransformer], domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
       modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
