@@ -11,4 +11,4 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.5")
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.11.2")
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.21")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.12.2")
