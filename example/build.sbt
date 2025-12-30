@@ -5,7 +5,7 @@ version := "1.0-SNAPSHOT"
 ThisBuild / scalafixDependencies ++= Seq(
   "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
   "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3",
-  "com.github.xuwei-k" %% "scalafix-rules" % "0.6.21",
+  "com.github.xuwei-k" %% "scalafix-rules" % "0.6.22",
   "com.github.jatcwang" %% "scalafix-named-params" % "0.2.6"
 )
 
