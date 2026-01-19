@@ -51,7 +51,8 @@ lazy val playSwagger = project.in(file("core"))
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.14.0" % Test,
         "com.google.errorprone" % "error_prone_annotations" % "2.46.0" % Test
-      ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
+      ) ++
+      (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
         case _ => Seq.empty
       }),
@@ -61,17 +62,19 @@ lazy val playSwagger = project.in(file("core"))
     crossScalaVersions := Seq(scalaVersion.value, "2.13.18", "3.3.7"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) => Seq("-Xlint:unused")
-      case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Wunused:all", "-Yretain-trees")
-    }) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, _)) => Seq("-Ypatmat-exhaust-depth", "40", "-P:semanticdb:synthetics:on")
-      case _ => Seq.empty
-    }) ++ Seq(
-      "-deprecation",
-      "-feature"
-    )
+    scalacOptions ++=
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 12)) => Seq("-Xlint:unused")
+        case Some((2, 13)) => Seq("-Wunused")
+        case _ => Seq("-Wunused:all", "-Yretain-trees")
+      }) ++
+        (CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, _)) => Seq("-Ypatmat-exhaust-depth", "40", "-P:semanticdb:synthetics:on")
+          case _ => Seq.empty
+        }) ++ Seq(
+          "-deprecation",
+          "-feature"
+        )
   )
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
@@ -98,14 +101,15 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     scriptedBufferLog := false,
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Xlint:unused")
-    }) ++ Seq(
-      "-deprecation",
-      "-feature",
-      "-Ypatmat-exhaust-depth",
-      "40",
-      "-P:semanticdb:synthetics:on"
-    )
+    scalacOptions ++=
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 13)) => Seq("-Wunused")
+        case _ => Seq("-Xlint:unused")
+      }) ++ Seq(
+        "-deprecation",
+        "-feature",
+        "-Ypatmat-exhaust-depth",
+        "40",
+        "-P:semanticdb:synthetics:on"
+      )
   )
