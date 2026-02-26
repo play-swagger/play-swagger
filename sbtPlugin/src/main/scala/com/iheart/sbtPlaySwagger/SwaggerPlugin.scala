@@ -26,6 +26,15 @@ object SwaggerPlugin extends AutoPlugin {
     resolvers += Resolver.jcenterRepo,
     // todo: remove hardcoded org name using BuildInfo
     libraryDependencies += "io.github.play-swagger" %% "play-swagger" % playSwaggerVersion % SwaggerConfig,
+    dependencyOverrides ++= {
+      if (scalaBinaryVersion.value == "3")
+        Seq(
+          "org.scala-lang" %% "scala3-library" % scalaVersion.value % SwaggerConfig,
+          "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % SwaggerConfig,
+          "org.scala-lang" %% "scala3-staging" % scalaVersion.value % SwaggerConfig
+        )
+      else Nil
+    },
     swaggerDomainNameSpaces := Seq(),
     swaggerV3 := false,
     swaggerTarget := target.value / "swagger",
