@@ -50,7 +50,7 @@ lazy val playSwagger = project.in(file("core"))
         "org.scalameta" %% "scalameta" % "4.17.0",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.14.2" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.49.0" % Test
+        "com.google.errorprone" % "error_prone_annotations" % "2.50.0" % Test
       ) ++
       (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
