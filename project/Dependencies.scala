@@ -4,7 +4,7 @@ object Dependencies {
     val play = "3.0.11"
     val playJson = "3.0.6"
     val specs2 = "4.23.0"
-    val enumeratum = "1.9.7"
+    val enumeratum = "1.9.8"
     val refined = "0.11.3"
   }
 
