@@ -59,7 +59,7 @@ lazy val playSwagger = project.in(file("core"))
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"),
     scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.18", "3.3.7"),
+    crossScalaVersions := Seq(scalaVersion.value, "2.13.18", "3.3.8"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalacOptions ++=
