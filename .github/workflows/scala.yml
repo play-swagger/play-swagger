@@ -32,6 +32,6 @@ jobs:
     - name: Core Lib tests
       run:
         sbt ';project playSwagger;clean;+test'
-    - name: Example compile
+    - name: Example compile and test
       run:
-        sbt publishForExample && cd example && sbt clean scalafmtSbtCheck scalafmtCheckAll scalafixEnable "scalafixAll --check" compile
+        sbt publishForExample && cd example && sbt clean scalafmtSbtCheck scalafmtCheckAll scalafixEnable "scalafixAll --check" test

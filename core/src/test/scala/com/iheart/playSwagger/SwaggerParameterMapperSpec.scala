@@ -115,6 +115,54 @@ class SwaggerParameterMapperSpec extends Specification {
       )
     }
 
+    "map enumeratum enum to enum constants" >> {
+      generalMapper.mapParam(
+        Parameter("enumeratumEnum", "com.iheart.playSwagger.SampleEnumeratumEnum", None, None),
+        None
+      ) === GenSwaggerParameter(
+        name = "enumeratumEnum",
+        required = true,
+        `type` = Option("string"),
+        `enum` = Option(Seq("info_one", "info_two"))
+      )
+    }
+
+    "map domain java enum to a $ref" >> {
+      val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
+      mapper.mapParam(
+        Parameter("javaEnum", "com.iheart.playSwagger.SampleJavaEnum", None, None),
+        None
+      ) === GenSwaggerParameter(
+        name = "javaEnum",
+        required = true,
+        referenceType = Option("com.iheart.playSwagger.SampleJavaEnum")
+      )
+    }
+
+    "map domain scala enum to a $ref" >> {
+      val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
+      mapper.mapParam(
+        Parameter("scalaEnum", "com.iheart.playSwagger.SampleScalaEnum.Value", None, None),
+        None
+      ) === GenSwaggerParameter(
+        name = "scalaEnum",
+        required = true,
+        referenceType = Option("com.iheart.playSwagger.SampleScalaEnum.Value")
+      )
+    }
+
+    "map domain enumeratum enum to a $ref" >> {
+      val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
+      mapper.mapParam(
+        Parameter("enumeratumEnum", "com.iheart.playSwagger.SampleEnumeratumEnum", None, None),
+        None
+      ) === GenSwaggerParameter(
+        name = "enumeratumEnum",
+        required = true,
+        referenceType = Option("com.iheart.playSwagger.SampleEnumeratumEnum")
+      )
+    }
+
     // TODO: for sequences, should the nested required be ignored?
     "map Option[Seq[T]] to item type" >> {
       generalMapper.mapParam(Parameter("aField", "Option[Seq[String]]", None, None), None) === GenSwaggerParameter(

@@ -5,9 +5,9 @@ import javax.inject._
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-import models.Message
+import models.{Color, Message, Paint}
 import org.apache.pekko.actor.ActorSystem
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsString, Json, OFormat, Writes}
 import play.api.mvc._
 
 /**
@@ -24,6 +24,8 @@ import play.api.mvc._
 class AsyncController @Inject() (actorSystem: ActorSystem, components: ControllerComponents)(implicit
     exec: ExecutionContext) extends AbstractController(components) {
   implicit val fmt: OFormat[Message] = Json.format[Message]
+  implicit val colorWrites: Writes[Color] = Writes(c => JsString(c.entryName))
+  implicit val paintWrites: Writes[Paint] = Json.writes[Paint]
 
   /**
     * Create an Action that returns a plain text message after a delay
@@ -35,6 +37,10 @@ class AsyncController @Inject() (actorSystem: ActorSystem, components: Controlle
     */
   def message: Action[AnyContent] = Action.async {
     getFutureMessage(1.second).map { msg => Ok(Json.toJson(msg)) }
+  }
+
+  def paint: Action[AnyContent] = Action {
+    Ok(Json.toJson(Paint(Color.RED, Color.GREEN)))
   }
 
   private def getFutureMessage(delayTime: FiniteDuration): Future[Message] = {

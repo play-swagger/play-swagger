@@ -113,18 +113,22 @@ class SwaggerParameterMapper(
     case unknown => GenSwaggerParameter(`type` = unknown.toLowerCase(), None, None)
   }
 
+  def enumValues(tpeName: String)(implicit cl: ClassLoader): Option[Seq[String]] = tpeName match {
+    case JavaEnum(enumConstants) => Some(enumConstants)
+    case ScalaEnum(enumConstants) => Some(enumConstants)
+    case EnumeratumEnum(enumConstants) => Some(enumConstants)
+    case _ => None
+  }
+
   private def enumParamMF(
       implicit name: String,
       default: Option[JsValue],
       description: Option[String],
       cl: ClassLoader
   ): MappingFunction = {
-    case JavaEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
-    case ScalaEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
-    case EnumeratumEnum(enumConstants) =>
-      GenSwaggerParameter(`type` = "string", format = None, `enum` = Option(enumConstants))
+    case tpe if enumValues(tpe).isDefined =>
+      if (isReference(tpe)) referenceParam(tpe)
+      else GenSwaggerParameter(`type` = "string", format = None, `enum` = enumValues(tpe))
   }
 
   /**
