@@ -9,7 +9,7 @@ name := "app"
 
 version := "1.0.1-BETA1"
 
-scalaVersion := "2.13.18"
+scalaVersion := "3.9.0"
 
 swaggerDomainNameSpaces := Seq("namespace1", "namespace2")
 
