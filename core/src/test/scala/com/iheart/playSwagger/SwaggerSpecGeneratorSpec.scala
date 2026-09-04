@@ -229,30 +229,53 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       polymorphicItemJson must beSome[JsObject]
     }
 
-    "read java enum with container" >> {
+    "read java enum with container as a $ref schema" >> {
       enumContainerJson must beSome[JsObject]
-      (enumContainerJson.get \ "properties" \ "javaEnum" \ "enum").asOpt[Seq[String]] === Some(Seq(
-        "DISABLED",
-        "ACTIVE"
-      ))
+      (enumContainerJson.get \ "properties" \ "javaEnum" \ "$ref").asOpt[String] === Some(
+        "#/definitions/com.iheart.playSwagger.SampleJavaEnum"
+      )
+      val javaEnumJson = (definitionsJson \ "com.iheart.playSwagger.SampleJavaEnum").asOpt[JsObject]
+      javaEnumJson must beSome[JsObject]
+      (javaEnumJson.get \ "type").asOpt[String] === Some("string")
+      (javaEnumJson.get \ "enum").asOpt[Seq[String]] === Some(Seq("DISABLED", "ACTIVE"))
+      (javaEnumJson.get \ "properties").asOpt[JsObject] must beNone
     }
 
-    "read scala enum with container" >> {
+    "read scala enum with container as a $ref schema" >> {
       enumContainerJson must beSome[JsObject]
-      (enumContainerJson.get \ "properties" \ "scalaEnum" \ "enum").asOpt[Seq[String]] === Some(Seq("One", "Two"))
+      (enumContainerJson.get \ "properties" \ "scalaEnum" \ "$ref").asOpt[String] === Some(
+        "#/definitions/com.iheart.playSwagger.SampleScalaEnum.Value"
+      )
+      val scalaEnumJson = (definitionsJson \ "com.iheart.playSwagger.SampleScalaEnum.Value").asOpt[JsObject]
+      scalaEnumJson must beSome[JsObject]
+      (scalaEnumJson.get \ "type").asOpt[String] === Some("string")
+      (scalaEnumJson.get \ "enum").asOpt[Seq[String]] === Some(Seq("One", "Two"))
     }
 
-    "read enumeratum enum with container" >> {
+    "read enumeratum enum with container as a $ref schema" >> {
       enumContainerJson must beSome[JsObject]
-      (enumContainerJson.get \ "properties" \ "enumeratumEnum" \ "enum").asOpt[Seq[String]] === Some(Seq(
+      (enumContainerJson.get \ "properties" \ "enumeratumEnum" \ "$ref").asOpt[String] === Some(
+        "#/definitions/com.iheart.playSwagger.SampleEnumeratumEnum"
+      )
+      val enumeratumEnumJson = (definitionsJson \ "com.iheart.playSwagger.SampleEnumeratumEnum").asOpt[JsObject]
+      enumeratumEnumJson must beSome[JsObject]
+      (enumeratumEnumJson.get \ "type").asOpt[String] === Some("string")
+      (enumeratumEnumJson.get \ "enum").asOpt[Seq[String]] === Some(Seq(
         "info_one",
         "info_two"
       ))
     }
 
-    "read enumeratum value enum with container" >> {
+    "read enumeratum value enum with container as a $ref schema" >> {
       enumContainerJson must beSome[JsObject]
-      (enumContainerJson.get \ "properties" \ "enumeratumValueEnum" \ "enum").asOpt[Seq[String]] === Some(Seq(
+      (enumContainerJson.get \ "properties" \ "enumeratumValueEnum" \ "$ref").asOpt[String] === Some(
+        "#/definitions/com.iheart.playSwagger.SampleEnumeratumValueEnum"
+      )
+      val enumeratumValueEnumJson =
+        (definitionsJson \ "com.iheart.playSwagger.SampleEnumeratumValueEnum").asOpt[JsObject]
+      enumeratumValueEnumJson must beSome[JsObject]
+      (enumeratumValueEnumJson.get \ "type").asOpt[String] === Some("string")
+      (enumeratumValueEnumJson.get \ "enum").asOpt[Seq[String]] === Some(Seq(
         "valueOne",
         "valueTwo"
       ))
@@ -608,8 +631,10 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "definition properties does not contain 'required' boolean field" >> {
       definitionsJson.as[JsObject].values.forall { definition =>
-        (definition \ "properties").as[JsObject].values.forall { property =>
-          (property \ "required").toOption === None
+        (definition \ "properties").asOpt[JsObject].forall { properties =>
+          properties.values.forall { property =>
+            (property \ "required").toOption === None
+          }
         }
       }
     }

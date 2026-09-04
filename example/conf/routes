@@ -19,6 +19,15 @@ GET     /                           controllers.HomeController.index
 ###
 GET     /message                    controllers.AsyncController.message
 
+###
+#  summary: Get a paint
+#  responses:
+#    200:
+#      schema:
+#        $ref: '#/definitions/models.Paint'
+###
+GET     /paint                      controllers.AsyncController.paint
+
 
 ### NoDocs ###
 GET   /docs/swagger-ui/*file        controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)

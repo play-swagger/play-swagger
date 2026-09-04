@@ -433,6 +433,43 @@ class DefinitionGeneratorSpec extends Specification {
     allDefs.find(_.name == "com.iheart.playSwagger.Foo") must beSome[Definition]
   }
 
+  "allDefinitions of enum container" >> {
+    val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
+    val allDefs = DefinitionGenerator(mapper).allDefinitions(List("com.iheart.playSwagger.EnumContainer"))
+
+    "reference enum fields instead of inlining them" >> {
+      val container = allDefs.find(_.name == "com.iheart.playSwagger.EnumContainer")
+      container must beSome[Definition]
+      container.get.properties.collect {
+        case p: GenSwaggerParameter => p.name -> p.referenceType
+      }.toMap === Map(
+        "javaEnum" -> Some("com.iheart.playSwagger.SampleJavaEnum"),
+        "scalaEnum" -> Some("com.iheart.playSwagger.SampleScalaEnum.Value"),
+        "enumeratumEnum" -> Some("com.iheart.playSwagger.SampleEnumeratumEnum"),
+        "enumeratumValueEnum" -> Some("com.iheart.playSwagger.SampleEnumeratumValueEnum")
+      )
+    }
+
+    "emit reusable schemas for referred enums" >> {
+      allDefs.find(_.name == "com.iheart.playSwagger.SampleJavaEnum") must beSome(
+        Definition(
+          name = "com.iheart.playSwagger.SampleJavaEnum",
+          properties = Nil,
+          `type` = Some("string"),
+          `enum` = Some(Seq("DISABLED", "ACTIVE"))
+        )
+      )
+      allDefs.find(_.name == "com.iheart.playSwagger.SampleEnumeratumEnum") must beSome(
+        Definition(
+          name = "com.iheart.playSwagger.SampleEnumeratumEnum",
+          properties = Nil,
+          `type` = Some("string"),
+          `enum` = Some(Seq("info_one", "info_two"))
+        )
+      )
+    }
+  }
+
   "java class definition" >> {
     "generate name correctly" >> {
       DefinitionGenerator(generalMapper).definition[Person].name === "com.iheart.playSwagger.Person"

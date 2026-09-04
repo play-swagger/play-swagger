@@ -68,6 +68,18 @@ abstract class DefinitionGeneratorCommons(implicit cl: ClassLoader) { self: Defi
       case p: GenSwaggerParameter => p
     }
 
+    def definitionFor(defName: String): Definition =
+      mapper.enumValues(defName) match {
+        case Some(values) =>
+          Definition(
+            name = defName,
+            properties = Nil,
+            `type` = Some("string"),
+            `enum` = Some(values)
+          )
+        case None => definition(defName)
+      }
+
     def allReferredDefs(defName: String, memo: List[Definition]): List[Definition] = {
       def findRefTypes(p: GenSwaggerParameter): Seq[String] =
         p.referenceType.toSeq ++ {
@@ -77,7 +89,7 @@ abstract class DefinitionGeneratorCommons(implicit cl: ClassLoader) { self: Defi
       memo.find(_.name == defName) match {
         case Some(_) => memo
         case None =>
-          val thisDef = definition(defName)
+          val thisDef = definitionFor(defName)
           val refNames: Seq[String] = for {
             p <- thisDef.properties.collect(genSwaggerParameter)
             className <- findRefTypes(p)

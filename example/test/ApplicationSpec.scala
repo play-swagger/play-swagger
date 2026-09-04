@@ -1,5 +1,8 @@
+import java.nio.file.{Files, Paths}
+
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 
@@ -26,6 +29,23 @@ class ApplicationSpec extends PlaySpec with GuiceOneAppPerTest {
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
       contentAsString(home) must include("Your new application is ready.")
+    }
+
+  }
+
+  "Swagger spec" should {
+
+    "emit enumeratum Color as a reusable schema" in {
+      val swaggerPath = Paths.get("target/swagger/swagger.json")
+      Files.exists(swaggerPath) mustBe true
+
+      val json = Json.parse(Files.readAllBytes(swaggerPath))
+      (json \ "definitions" \ "models.Paint" \ "properties" \ "color" \ "$ref").as[String] mustBe
+        "#/definitions/models.Color"
+      (json \ "definitions" \ "models.Paint" \ "properties" \ "accent" \ "$ref").as[String] mustBe
+        "#/definitions/models.Color"
+      (json \ "definitions" \ "models.Color" \ "type").as[String] mustBe "string"
+      (json \ "definitions" \ "models.Color" \ "enum").as[Seq[String]] mustBe Seq("RED", "GREEN", "PUCE")
     }
 
   }

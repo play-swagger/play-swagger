@@ -21,9 +21,12 @@ libraryDependencies ++= Seq(
   ws,
   guice,
   "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test,
-  "org.webjars" % "swagger-ui" % "5.9.0" // play-swagger ui integration
+  "org.webjars" % "swagger-ui" % "5.9.0", // play-swagger ui integration
+  "com.beachape" %% "enumeratum" % "1.9.8"
 )
 
 scalacOptions ++= Seq("-Xlint:unused")
 
 swaggerDomainNameSpaces := Seq("models")
+
+Test / test := (Test / test).dependsOn(swagger).value
