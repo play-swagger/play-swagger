@@ -28,6 +28,12 @@ case class DayOfWeek(name: Option[String])
 case class PolymorphicContainer(item: PolymorphicItem)
 trait PolymorphicItem
 
+/**
+  * @param javaEnum A Java enum field
+  * @param scalaEnum A Scala enum field
+  * @param enumeratumEnum An enumeratum enum field
+  * @param enumeratumValueEnum An enumeratum value enum field
+  */
 case class EnumContainer(
     javaEnum: SampleJavaEnum,
     scalaEnum: SampleScalaEnum.SampleScalaEnum,
@@ -562,8 +568,17 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       lazy val json = SwaggerSpecGenerator(false, false, embedScaladoc = true, "com.iheart").generate("test.routes").get
       lazy val definitionsJson = json \ "definitions"
       lazy val dayOfWeekJson = (definitionsJson \ "com.iheart.playSwagger.DayOfWeek").asOpt[JsObject]
+      lazy val enumContainerJson = (definitionsJson \ "com.iheart.playSwagger.EnumContainer").asOpt[JsObject]
       dayOfWeekJson must beSome[JsObject]
       (dayOfWeekJson.get \ "properties" \ "name" \ "description").as[String] === "e.g. Sunday, Monday, TuesDay..."
+
+      enumContainerJson must beSome[JsObject]
+      val javaEnumProp = (enumContainerJson.get \ "properties" \ "javaEnum").as[JsObject]
+      (javaEnumProp \ "$ref").as[String] === "#/definitions/com.iheart.playSwagger.SampleJavaEnum"
+      (javaEnumProp \ "description").as[String] === "A Java enum field"
+      val enumeratumEnumProp = (enumContainerJson.get \ "properties" \ "enumeratumEnum").as[JsObject]
+      (enumeratumEnumProp \ "$ref").as[String] === "#/definitions/com.iheart.playSwagger.SampleEnumeratumEnum"
+      (enumeratumEnumProp \ "description").as[String] === "An enumeratum enum field"
     }
 
     "don't embedded scaladoc strings" >> {

@@ -131,11 +131,12 @@ class SwaggerParameterMapperSpec extends Specification {
       val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
       mapper.mapParam(
         Parameter("javaEnum", "com.iheart.playSwagger.SampleJavaEnum", None, None),
-        None
+        Some("A Java enum field")
       ) === GenSwaggerParameter(
         name = "javaEnum",
         required = true,
-        referenceType = Option("com.iheart.playSwagger.SampleJavaEnum")
+        referenceType = Option("com.iheart.playSwagger.SampleJavaEnum"),
+        description = Some("A Java enum field")
       )
     }
 
@@ -143,11 +144,12 @@ class SwaggerParameterMapperSpec extends Specification {
       val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
       mapper.mapParam(
         Parameter("scalaEnum", "com.iheart.playSwagger.SampleScalaEnum.Value", None, None),
-        None
+        Some("A Scala enum field")
       ) === GenSwaggerParameter(
         name = "scalaEnum",
         required = true,
-        referenceType = Option("com.iheart.playSwagger.SampleScalaEnum.Value")
+        referenceType = Option("com.iheart.playSwagger.SampleScalaEnum.Value"),
+        description = Some("A Scala enum field")
       )
     }
 
@@ -155,11 +157,12 @@ class SwaggerParameterMapperSpec extends Specification {
       val mapper = new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier("com.iheart.playSwagger"))
       mapper.mapParam(
         Parameter("enumeratumEnum", "com.iheart.playSwagger.SampleEnumeratumEnum", None, None),
-        None
+        Some("An enumeratum enum field")
       ) === GenSwaggerParameter(
         name = "enumeratumEnum",
         required = true,
-        referenceType = Option("com.iheart.playSwagger.SampleEnumeratumEnum")
+        referenceType = Option("com.iheart.playSwagger.SampleEnumeratumEnum"),
+        description = Some("An enumeratum enum field")
       )
     }
 
