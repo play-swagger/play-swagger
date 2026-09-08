@@ -450,6 +450,21 @@ class DefinitionGeneratorSpec extends Specification {
       )
     }
 
+    "keep scaladoc descriptions on referred enum fields" >> {
+      val defs = DefinitionGenerator(mapper, NamingConvention.None, embedScaladoc = true)
+        .allDefinitions(List("com.iheart.playSwagger.EnumContainer"))
+      val container = defs.find(_.name == "com.iheart.playSwagger.EnumContainer")
+      container must beSome[Definition]
+      container.get.properties.collect {
+        case p: GenSwaggerParameter => p.name -> p.description
+      }.toMap === Map(
+        "javaEnum" -> Some("A Java enum field"),
+        "scalaEnum" -> Some("A Scala enum field"),
+        "enumeratumEnum" -> Some("An enumeratum enum field"),
+        "enumeratumValueEnum" -> Some("An enumeratum value enum field")
+      )
+    }
+
     "emit reusable schemas for referred enums" >> {
       allDefs.find(_.name == "com.iheart.playSwagger.SampleJavaEnum") must beSome(
         Definition(

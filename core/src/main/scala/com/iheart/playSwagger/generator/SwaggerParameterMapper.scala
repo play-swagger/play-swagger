@@ -183,14 +183,22 @@ class SwaggerParameterMapper(
     }
   }
 
-  private def referenceParamMF(implicit name: String): MappingFunction = {
+  private def referenceParamMF(implicit name: String, description: Option[String]): MappingFunction = {
     case tpe if isReference(tpe) => referenceParam(tpe)
   }
 
   def isReference(tpeName: String): Boolean = modelQualifier.isModel(tpeName)
 
-  private def referenceParam(referenceType: String)(implicit name: String): GenSwaggerParameter =
-    GenSwaggerParameter(name = name, required = true, referenceType = Some(referenceType))
+  private def referenceParam(referenceType: String)(
+      implicit name: String,
+      description: Option[String]
+  ): GenSwaggerParameter =
+    GenSwaggerParameter(
+      name = name,
+      required = true,
+      referenceType = Some(referenceType),
+      description = description
+    )
 
   private def optionalParamMF(
       implicit name: String,
