@@ -1,6 +1,6 @@
 update / logLevel := sbt.Level.Warn
 
-addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.12.0")
+addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.13.0")
 addSbtPlugin("org.playframework" %% "sbt-plugin" % "3.0.0")
 
 {
