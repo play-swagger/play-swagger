@@ -197,6 +197,21 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       (trackJson \ "required").as[Seq[String]] must not contain "genre"
     }
 
+    "keeps x-nullable on Option items of a Seq when optionAsNullable is false" >> {
+      lazy val json = SwaggerSpecGenerator(
+        modelQualifier = PrefixDomainModelQualifier("com.iheart"),
+        optionAsNullable = false
+      ).generate("test.routes").get
+      lazy val wrapperJson =
+        (json \ "definitions" \ "com.iheart.playSwagger.TypeParametricWrapper[Option[String], Seq[com.iheart.playSwagger.Cat], Seq[Option[com.iheart.playSwagger.Dog]]]").as[
+          JsObject
+        ]
+
+      (wrapperJson \ "properties" \ "maybeOtherPayload" \ "x-nullable").isEmpty === true
+      (wrapperJson \ "properties" \ "seq" \ "items" \ "items" \ "$ref").as[String] === "#/definitions/com.iheart.playSwagger.Dog"
+      (wrapperJson \ "properties" \ "seq" \ "items" \ "items" \ "x-nullable").as[Boolean] === true
+    }
+
     "merge comment in" >> {
       val sidPara = (stationJson \ "parameters").as[JsArray].value(0).as[JsObject]
       (sidPara \ "name").as[String] === "sid"

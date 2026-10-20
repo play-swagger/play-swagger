@@ -212,10 +212,10 @@ class SwaggerParameterMapper(
       cl: ClassLoader
   ): MappingFunction = {
     case tpe if higherOrderType("Option", tpe, None).isDefined =>
-      optionalParam(higherOrderType("Option", tpe, None).get)
+      optionalParam(higherOrderType("Option", tpe, None).get, nullable = optionAsNullable)
   }
 
-  private def optionalParam(optionalTpe: String)(
+  private def optionalParam(optionalTpe: String, nullable: Boolean)(
       implicit name: String,
       default: Option[JsValue],
       description: Option[String],
@@ -231,7 +231,7 @@ class SwaggerParameterMapper(
       },
       description = description
     )
-    if (optionAsNullable) asRequired.update(required = false, nullable = true, default = asRequired.default)
+    if (nullable) asRequired.update(required = false, nullable = true, default = asRequired.default)
     else asRequired match {
       case p: GenSwaggerParameter => p.copy(required = false)
       case p: CustomSwaggerParameter => p.copy(required = false)
@@ -246,18 +246,26 @@ class SwaggerParameterMapper(
       cl: ClassLoader
   ): MappingFunction = {
     case tpe if collectionItemType(tpe).isDefined =>
+      val itemTpe = collectionItemType(tpe).get
       // TODO: This could use a different type to represent ItemsObject(http://swagger.io/specification/#itemsObject),
       // since the structure is not quite the same, and still has to be handled specially in a json transform (see propWrites in SwaggerSpecGenerator)
       // However, that spec conflicts with example code elsewhere that shows other fields in the object, such as properties:
       // http://stackoverflow.com/questions/26206685/how-can-i-describe-complex-json-model-in-swagger
       updateOnlyGenParam(generalParamMF.apply("array"))(_.copy(
         items = Some(
-          mapParam(
-            typeName = collectionItemType(tpe).get,
-            name = name,
-            default = default,
-            description = description
-          )
+          higherOrderType("Option", removeKnownPrefixes(itemTpe), None) match {
+            case Some(optionalItemTpe) =>
+              // JSON serialization (e.g. through play-json) typically renders collection items that
+              // are `None` as `null`, so render these `Option` items as nullable
+              optionalParam(optionalItemTpe, nullable = true)
+            case None =>
+              mapParam(
+                typeName = itemTpe,
+                name = name,
+                default = default,
+                description = description
+              )
+          }
         )
       ))
   }

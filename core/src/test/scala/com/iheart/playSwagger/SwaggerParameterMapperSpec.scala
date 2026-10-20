@@ -211,6 +211,22 @@ class SwaggerParameterMapperSpec extends Specification {
           )
       }
 
+      "keep Option[T] items of a Seq nullable" >> {
+        notNullableMapper.mapParam(Parameter("aField", "Option[Seq[Option[String]]]", None, None), None) ===
+          GenSwaggerParameter(
+            name = "aField",
+            required = false,
+            nullable = None,
+            `type` = Some("array"),
+            items = Some(GenSwaggerParameter(
+              name = "aField",
+              required = false,
+              nullable = Some(true),
+              `type` = Some("string")
+            ))
+          )
+      }
+
       "map Option[T] with custom mapping as optional but not nullable" >> {
         val mappings: Seq[CustomTypeMapping] = List(CustomTypeMapping(
           "java.time.LocalDate",

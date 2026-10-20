@@ -560,6 +560,8 @@ By default, an `Option[T]` field or parameter is rendered in the OpenAPI spec as
 In some cases, advertising these fields as nullable is not desirable. You can disable rendering `Option[T]` fields as nullable by setting the `swaggerOptionAsNullable` flag to `false` in `build.sbt`.
 The fields then simply get rendered as optional but *not* nullable.
 
+Note: `Option[T]` items within a collection (e.g. `Seq[Option[T]]`) are still rendered as nullable, because JSON serialization typically renders `None` items in a collection as `null`.
+
 ```sbt
 swaggerOptionAsNullable := false
 ```
