@@ -8,9 +8,14 @@ import com.iheart.playSwagger.domain.parameter.{CustomSwaggerParameter, GenSwagg
 import play.api.libs.json._
 import play.routes.compiler.Parameter
 
+/**
+  * @param optionAsNullable If true, an `Option[T]` is optional and nullable.
+  *                         If false, an `Option[T]` is just optional.
+  */
 class SwaggerParameterMapper(
     customMappings: Seq[CustomTypeMapping] = Nil,
-    val modelQualifier: DomainModelQualifier
+    val modelQualifier: DomainModelQualifier,
+    optionAsNullable: Boolean = true
 ) {
 
   type MappingFunction = PartialFunction[String, SwaggerParameter]
@@ -226,7 +231,12 @@ class SwaggerParameterMapper(
       },
       description = description
     )
-    asRequired.update(required = false, nullable = true, default = asRequired.default)
+    if (optionAsNullable) asRequired.update(required = false, nullable = true, default = asRequired.default)
+    else asRequired match {
+      case p: GenSwaggerParameter => p.copy(required = false)
+      case p: CustomSwaggerParameter => p.copy(required = false)
+      case p => p.update(required = false, nullable = false, default = p.default)
+    }
   }
 
   private def itemsParamMF(

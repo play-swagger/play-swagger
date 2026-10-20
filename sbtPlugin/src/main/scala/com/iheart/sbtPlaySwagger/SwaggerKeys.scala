@@ -42,4 +42,10 @@ trait SwaggerKeys {
       "embedScaladoc",
       "Output schema description using scaladoc of case class"
     )
+
+  val swaggerOptionAsNullable: SettingKey[Boolean] =
+    SettingKey[Boolean](
+      "swaggerOptionAsNullable",
+      "True, if Option[T] fields and parameters are marked as nullable in addition to not required"
+    )
 }

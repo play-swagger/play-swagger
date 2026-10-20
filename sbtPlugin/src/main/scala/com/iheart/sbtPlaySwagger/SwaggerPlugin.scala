@@ -47,6 +47,7 @@ object SwaggerPlugin extends AutoPlugin {
     swaggerNamingStrategy := "none",
     swaggerOperationIdNamingFully := false,
     embedScaladoc := false,
+    swaggerOptionAsNullable := true,
     swagger := Def.task[File] {
       swaggerTarget.value.mkdirs()
       val file = swaggerTarget.value / swaggerFileName.value
@@ -61,6 +62,7 @@ object SwaggerPlugin extends AutoPlugin {
         swaggerNamingStrategy.value ::
         swaggerOperationIdNamingFully.value.toString ::
         embedScaladoc.value.toString ::
+        swaggerOptionAsNullable.value.toString ::
         Nil
       val swaggerClasspath =
         data((Runtime / fullClasspath).value) ++ update.value.select(configurationFilter(SwaggerConfig.name))

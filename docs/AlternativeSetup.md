@@ -19,7 +19,7 @@ Example (compile time DI):
 package controllers.swagger
 
 import play.api.Configuration
-import com.iheart.playSwagger.generator.SwaggerSpecGenerator
+import com.iheart.playSwagger.generator.{PrefixDomainModelQualifier, SwaggerSpecGenerator}
 import play.api.libs.json.JsString
 import play.api.mvc._
 
@@ -28,7 +28,9 @@ class ApiSpecs(cc: ControllerComponents, config: Configuration) extends Abstract
 
   val domainPackage = "YOUR.DOMAIN.PACKAGE"
   val otherDomainPackage = "YOUR.OtherDOMAIN.PACKAGE"
-  lazy val generator = SwaggerSpecGenerator(domainPackage, otherDomainPackage)
+  lazy val generator = SwaggerSpecGenerator(
+    modelQualifier = PrefixDomainModelQualifier(domainPackage, otherDomainPackage)
+  )
 
   // Get's host configuration.
   val host = config.get[String]("swagger.host")

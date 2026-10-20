@@ -554,6 +554,24 @@ The generated JSON will look like this.
 }
 ```
 
+#### Configuring `Option[T]` as non-nullable
+
+By default, an `Option[T]` field or parameter is rendered in the OpenAPI spec as optional **and** nullable (`"nullable": true` when `swaggerV3` is true, else `"x-nullable": true`).
+In some cases, advertising these fields as nullable is not desirable. You can disable rendering `Option[T]` fields as nullable by setting the `swaggerOptionAsNullable` flag to `false` in `build.sbt`.
+The fields then simply get rendered as optional but *not* nullable.
+
+```sbt
+swaggerOptionAsNullable := false
+```
+
+or if you took the [alternative setup](docs/AlternativeSetup.md)
+```scala
+SwaggerSpecGenerator(
+  modelQualifier = PrefixDomainModelQualifier(domainPackage),
+  optionAsNullable = false
+)
+```
+
 #### Is play java supported? 
 
 you can generate models definition from java POJO by setting the flag:

@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 import com.iheart.playSwagger.RefinedTypes.{Age, Albums, SpotifyAccount}
 import com.iheart.playSwagger.domain.CustomTypeMapping
-import com.iheart.playSwagger.generator.SwaggerSpecGenerator
+import com.iheart.playSwagger.generator.{PrefixDomainModelQualifier, SwaggerSpecGenerator}
 import org.specs2.mutable.Specification
 import play.api.libs.json._
 
@@ -178,6 +178,23 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
       (limitParamJson \ "default").asOpt[String] === None
       (limitParamJson \ "required").as[Boolean] === false
       (limitParamJson \ "x-nullable").as[Boolean] === true
+    }
+
+    "reads optional field without x-nullable when optionAsNullable is false" >> {
+      lazy val json = SwaggerSpecGenerator(
+        modelQualifier = PrefixDomainModelQualifier("com.iheart"),
+        optionAsNullable = false
+      ).generate("test.routes").get
+      lazy val artistJson = (json \ "paths" \ "/api/artist/{aid}/playedTracks/recent" \ "get").as[JsObject]
+      lazy val trackJson = (json \ "definitions" \ "com.iheart.playSwagger.Track").as[JsObject]
+
+      val limitParamJson = (artistJson \ "parameters").as[JsArray].value(1).as[JsObject]
+      (limitParamJson \ "name").as[String] === "limit"
+      (limitParamJson \ "required").as[Boolean] === false
+      (limitParamJson \ "x-nullable").isEmpty === true
+
+      (trackJson \ "properties" \ "genre" \ "x-nullable").isEmpty === true
+      (trackJson \ "required").as[Seq[String]] must not contain "genre"
     }
 
     "merge comment in" >> {
@@ -821,6 +838,19 @@ class SwaggerSpecGeneratorIntegrationSpec extends Specification {
 
     "properties don't set nullable on non-options" >> {
       (trackJson \ "properties" \ "name" \ "nullable").isEmpty === true
+    }
+
+    "properties don't set nullable on options when optionAsNullable is false" >> {
+      lazy val json = SwaggerSpecGenerator(
+        modelQualifier = PrefixDomainModelQualifier("com.iheart"),
+        swaggerV3 = true,
+        optionAsNullable = false
+      ).generate("testV3.routes").get
+      lazy val trackJson = (json \ "components" \ "schemas" \ "com.iheart.playSwagger.Track").as[JsObject]
+
+      (trackJson \ "properties" \ "genre" \ "type").as[String] === "string"
+      (trackJson \ "properties" \ "genre" \ "nullable").isEmpty === true
+      (trackJson \ "required").as[Seq[String]] must not contain "genre"
     }
   }
 }
