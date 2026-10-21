@@ -81,6 +81,7 @@ object SwaggerSpecGenerator {
   * @param defaultPostBodyFormat 未記載の場合の Post レスポンスボディの MIME TYPE
   * @param apiVersion            対象 API のバージョン
   * @param operationIdFully      API の名前にパッケージ名を利用するか
+  * @param optionAsNullable      If true, mark `Option[T]` as nullable (`nullable: true` or `x-nullable: true`)
   */
 final case class SwaggerSpecGenerator(
     namingConvention: NamingConvention = NamingConvention.None,
@@ -91,7 +92,8 @@ final case class SwaggerSpecGenerator(
     swaggerPlayJava: Boolean = false,
     apiVersion: Option[String] = None,
     operationIdFully: Boolean = false,
-    embedScaladoc: Boolean = false
+    embedScaladoc: Boolean = false,
+    optionAsNullable: Boolean = true
 )(implicit cl: ClassLoader) {
 
   private val parameterWriter = new SwaggerParameterWriter(swaggerV3)
@@ -104,7 +106,7 @@ final case class SwaggerSpecGenerator(
     readYmlOrJson[Seq[CustomTypeMapping]](customMappingsFileName).getOrElse(Nil)
   }
 
-  private lazy val swaggerParameterMapper = new SwaggerParameterMapper(customMappings, modelQualifier)
+  private lazy val swaggerParameterMapper = new SwaggerParameterMapper(customMappings, modelQualifier, optionAsNullable)
   private lazy val definitionGenerator = DefinitionGenerator(
     mapper = swaggerParameterMapper,
     swaggerPlayJava = swaggerPlayJava,

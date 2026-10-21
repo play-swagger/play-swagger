@@ -182,6 +182,64 @@ class SwaggerParameterMapperSpec extends Specification {
       )
     }
 
+    "with optionAsNullable = false" >> {
+      val notNullableMapper =
+        new SwaggerParameterMapper(Nil, PrefixDomainModelQualifier(), optionAsNullable = false)
+
+      "map Option[T] as optional but not nullable" >> {
+        notNullableMapper.mapParam(Parameter("aField", "Option[String]", None, None), None) === GenSwaggerParameter(
+          name = "aField",
+          required = false,
+          nullable = None,
+          `type` = Some("string")
+        )
+      }
+
+      "map Option[Seq[T]] as optional but not nullable" >> {
+        notNullableMapper.mapParam(Parameter("aField", "Option[Seq[String]]", None, None), None) ===
+          GenSwaggerParameter(
+            name = "aField",
+            required = false,
+            nullable = None,
+            `type` = Some("array"),
+            items = Some(GenSwaggerParameter(
+              name = "aField",
+              required = true,
+              nullable = None,
+              `type` = Some("string")
+            ))
+          )
+      }
+
+      "keep Option[T] items of a Seq nullable" >> {
+        notNullableMapper.mapParam(Parameter("aField", "Option[Seq[Option[String]]]", None, None), None) ===
+          GenSwaggerParameter(
+            name = "aField",
+            required = false,
+            nullable = None,
+            `type` = Some("array"),
+            items = Some(GenSwaggerParameter(
+              name = "aField",
+              required = false,
+              nullable = Some(true),
+              `type` = Some("string")
+            ))
+          )
+      }
+
+      "map Option[T] with custom mapping as optional but not nullable" >> {
+        val mappings: Seq[CustomTypeMapping] = List(CustomTypeMapping(
+          "java.time.LocalDate",
+          specAsParameter = List(Json.obj("type" -> "string", "format" -> "date"))
+        ))
+        val mapper = new SwaggerParameterMapper(mappings, PrefixDomainModelQualifier(), optionAsNullable = false)
+        val parameter = mapper.mapParam(Parameter("aField", "Option[java.time.LocalDate]", None, None), None)
+        parameter must beAnInstanceOf[CustomSwaggerParameter]
+        parameter.required must beFalse
+        parameter.nullable must beNone
+      }
+    }
+
     "map scala.collection.immutable.Seq[T] to item type" >> {
       generalMapper.mapParam(
         Parameter("aField", "scala.collection.immutable.Seq[String]", None, None),

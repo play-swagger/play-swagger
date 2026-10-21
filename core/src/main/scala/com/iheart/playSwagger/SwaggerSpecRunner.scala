@@ -11,13 +11,14 @@ object SwaggerSpecRunner {
   def main(args: Array[String]): Unit = {
     implicit def cl: ClassLoader = getClass.getClassLoader
 
-    val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: Nil =
+    val targetFile :: routesFile :: domainNameSpaceArgs :: outputTransformersArgs :: swaggerV3String :: apiVersion :: swaggerPrettyJson :: swaggerPlayJavaString :: namingStrategy :: operationIdNamingFullyString :: embedScaladocString :: optionAsNullableString :: Nil =
       args.toList: @unchecked
     def fileArg = Paths.get(targetFile)
     def swaggerJson = {
       val swaggerV3 = java.lang.Boolean.parseBoolean(swaggerV3String)
       val swaggerOperationIdNamingFully = java.lang.Boolean.parseBoolean(operationIdNamingFullyString)
       val embedScaladoc = java.lang.Boolean.parseBoolean(embedScaladocString)
+      val optionAsNullable = java.lang.Boolean.parseBoolean(optionAsNullableString)
       val swaggerPlayJava = java.lang.Boolean.parseBoolean(swaggerPlayJavaString)
       val domainModelQualifier = PrefixDomainModelQualifier(domainNameSpaceArgs.split(",").toSeq: _*)
       val transformersStrs: Seq[String] =
@@ -41,7 +42,8 @@ object SwaggerSpecRunner {
         swaggerPlayJava = swaggerPlayJava,
         apiVersion = Some(apiVersion),
         operationIdFully = swaggerOperationIdNamingFully,
-        embedScaladoc = embedScaladoc
+        embedScaladoc = embedScaladoc,
+        optionAsNullable = optionAsNullable
       ).generate(routesFile).get
 
       if (swaggerPrettyJson.toBoolean) Json.prettyPrint(swaggerSpec)
