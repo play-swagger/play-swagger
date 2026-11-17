@@ -45,6 +45,9 @@ final case class DefinitionGenerator(
         .flatMap(_.getAnnotation(scaladocAnnotSymbol))
         .collect {
           case Apply(_, List(Literal(StringConstant(docstring)))) => docstring
+          // Since Scala 3.6 (scala/scala3#20539), arguments of Java annotations such as
+          // @Scaladoc are pickled as NamedArg instead of positional literals, so match both shapes.
+          case Apply(_, List(NamedArg(_, Literal(StringConstant(docstring))))) => docstring
         }
         .flatMap(ScaladocParser.parse)
         .flatMap(_.para)
