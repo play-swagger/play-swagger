@@ -6,10 +6,10 @@ Follow the [Step 1](../README.md#step-1) from the main README.
 
 Note:
   It is sufficient to only add Play swagger as a library dependency in your `build.sbt` rather than a plugin in this setup.
-  You'll need to add following dependency:
+  You'll need to add following dependency (use the version from the table in Step 1):
 ```scala
-  "io.github.play-swagger" %% "play-swagger" % "1.4.4"
-```  
+libraryDependencies += "io.github.play-swagger" %% "play-swagger" % "3.1.7"
+```
 
 #### Step 2
 Add a controller that uses  Play swagger as a library to generates a swagger spec json and serves it as an endpoint.
@@ -24,7 +24,7 @@ import play.api.libs.json.JsString
 import play.api.mvc._
 
 class ApiSpecs(cc: ControllerComponents, config: Configuration) extends AbstractController(cc) {
-  implicit val cl = getClass.getClassLoader
+  implicit val cl: ClassLoader = getClass.getClassLoader
 
   val domainPackage = "YOUR.DOMAIN.PACKAGE"
   val otherDomainPackage = "YOUR.OtherDOMAIN.PACKAGE"
@@ -32,7 +32,7 @@ class ApiSpecs(cc: ControllerComponents, config: Configuration) extends Abstract
     modelQualifier = PrefixDomainModelQualifier(domainPackage, otherDomainPackage)
   )
 
-  // Get's host configuration.
+  // Gets host configuration.
   val host = config.get[String]("swagger.host")
 
   lazy val swagger = Action { request =>
