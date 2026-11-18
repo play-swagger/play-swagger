@@ -1,1 +1,25 @@
-This is an example Play Application using play-swagger with sbt-play-swagger plugin
+This is an example Play Application using play-swagger with sbt-play-swagger plugin.
+
+The example uses the play-swagger code in this repository, not a released
+version. Its project/plugins.sbt refers to version 0.0.1-EXAMPLE, so you must
+publish that version locally before you build the example.
+
+1. From the repository root, publish the library and the plugin locally:
+
+     sbt publishForExample
+
+2. Go to the example directory and run the tests. The tests also generate
+   the spec:
+
+     cd example
+     sbt test
+
+3. To see the generated spec, start the application:
+
+     sbt run
+
+   The spec is at http://localhost:9000/assets/swagger.json
+   The Swagger UI is at http://localhost:9000/docs/swagger-ui/index.html
+   (enter /assets/swagger.json in the top bar of the UI to load the spec).
+
+Do step 1 again each time you change the code in core or sbtPlugin.

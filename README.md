@@ -1,5 +1,5 @@
-[![Scala CI](https://github.com/play-swagger/play-swagger/actions/workflows/scala.yml/badge.svg)](https://github.com/iheartradio/play-swagger/actions/workflows/scala.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/play-swagger/sbt-play-swagger/badge.svg)](https://maven-badges.herokuapp.com/maven-central/play-swagger/sbt-play-swagger)
+[![Scala CI](https://github.com/play-swagger/play-swagger/actions/workflows/scala.yml/badge.svg)](https://github.com/play-swagger/play-swagger/actions/workflows/scala.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.play-swagger/sbt-play-swagger_2.12_1.0)](https://central.sonatype.com/artifact/io.github.play-swagger/sbt-play-swagger_2.12_1.0)
 
 # Swagger API spec generator for Play
 
@@ -17,7 +17,6 @@ Which translates to
 2. Reference your case classes in your swagger spec and play-swagger will generate definitions
 3. Override anything in either the swagger spec in comment or the base swagger spec file (swagger.yml or swagger.json in your conf)
 
-============================
 ## Day-to-day usage 
 
 For installation/get-started see the next section. 
@@ -67,35 +66,25 @@ If not, you will have to write the definition yourself in the base swagger spec 
 The result swagger specs will look like:
   ![](http://amp-public-share.s3-website-us-east-1.amazonaws.com/shifu/play-swagger-sample.png)
 
- 
-============================
 ## Get Started
 
 In short you need to add sbt-play-swagger plugin which generates swagger.json on package time,
-then you just need to have a swagger UI instance to consumer that swagger spec.
-You can find the setup in the example project as well.
-  
+then you just need to have a swagger UI instance to consume that swagger spec.
+You can find the setup in the [example project](example) as well.
 
 #### Step 1
 
-1. For play 2.8, Scala 2.13.x and Scala 2.12.x please use
-```scala
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "1.6.1")
-```
+Add the plugin to `project/plugins.sbt`. Use the version that matches your Play and Scala versions:
 
-2. For play 2.9, Scala 2.13.x please use (Code is in branch 1.7.0)
-```scala
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "1.7.0")
-```
+| Play | Scala | sbt-play-swagger |
+|------|-------|------------------|
+| 3.0 | 2.13 or 3.3+ | 3.1.7 (latest) |
+| 2.8 | 2.12 | 3.1.7 (latest) |
+| 2.9 | 2.13 | 1.7.3 |
+| 2.8 | 2.13 | 1.6.3 |
 
-3. For play 3.0, Scala 2.13.x please use (Code is in branch 2.0.0)
 ```scala
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "2.0.0")
-```
-
-3. For play 3.0, Scala 3.3.x please use (Code is in branch 3.0.0)
-```scala
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.0.0")
+addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.1.7")
 ```
 
 Then enable it for your Play app - in build.sbt add `SwaggerPlugin` to the root project like
@@ -108,7 +97,7 @@ Also in build.sbt add domain package names for play-swagger to auto generate swa
 swaggerDomainNameSpaces := Seq("models")
 ```
 
-To be more specific, If you want to use the case class defined in the package `something.models` in swagger (accessed via `#ref:definitions/`), add the following in sbt.
+To be more specific, if you want to use the case class defined in the package `something.models` in swagger (accessed via `$ref: '#/definitions/...'`), add the following in sbt.
 ```Scala
 swaggerDomainNameSpaces := Seq("something.models")
 ```
@@ -120,10 +109,9 @@ swaggerDomainNameSpaces := Seq("something.models","other.models")
 
 This plugin adds a sbt task `swagger`, with which you can generate the `swagger.json` for testing purpose.
 
-This plugin will generate the `swagger.json`and make it available under path `assets/swagger.json` on `sbt package` and `sbt run`.
+This plugin will generate the `swagger.json` and make it available under path `assets/swagger.json` on `sbt package`, `sbt stage` and `sbt run`.
 
 Alternatively, you can create a controller that uses play-swagger lib to generate the json and serve it, this way you can manipulate the swagger.json at runtime. See [here](docs/AlternativeSetup.md) for details.
-
 
 #### Step 2
 Add a base `swagger.yml` (or `swagger.json`) to your `resources` folder (for example, conf folder in the play application). This file needs to provide all the required fields according to swagger spec.
@@ -141,13 +129,13 @@ E.g.
     - application/json
 
 ```
-Note that `info.version` is intentionally left out, playSwagger will automatically fillin the build version of the project. However if the version is set here it will be honored. You can also dynamically generate the version string in build file using the `swaggerAPIVersion` setting.   
+Note that `info.version` is intentionally left out, playSwagger will automatically fill in the build version of the project. However if the version is set here it will be honored. You can also dynamically generate the version string in build file using the `swaggerAPIVersion` setting.   
 
 #### Step 3a
 Deploy a swagger ui and point to the swagger spec end point at 'assets/swagger.json', or
 
 #### Step 3b
-Alternatively you can use swagger-ui webjar and have you play app serving the swagger ui:
+Alternatively you can use swagger-ui webjar and have your play app serve the swagger ui:
 
 The query parameter `url` is disabled in 4.1.3 and later versions. ([GHSA-qrmm-w75w-3wpx](https://github.com/swagger-api/swagger-ui/security/advisories/GHSA-qrmm-w75w-3wpx))
 ```scala
@@ -178,15 +166,12 @@ For more information: [installation.md](https://github.com/swagger-api/swagger-u
 
 The sbt-play-swagger plugin will generate the swagger.json on `sbt run` or `sbt package`.
 
-============================
 ## How to contribute
 
 If you have any questions/bug reports, please submit an issue on github. 
 With good unit tests coverage, it's pretty easy to add/modify this library as well. 
 Code contribution are more than welcome. Make sure that your code is tested and submit the pull request!    
 
-
-===========================
 ## FAQ
 
 #### How to override?
@@ -233,13 +218,11 @@ To use a custom naming strategies to override your case classes field names, you
 swaggerNamingStrategy := "snake_case" //snake_case_skip_number, kebab-case, lowercase and UpperCamelCase also available
 ```
 
-#### The spec is missing when built to a docker image using sbt-native-pakcager
+#### The spec is missing when built to a docker image using sbt-native-packager
 
-@mosche answered this one in #114
-> It's a bit unfortunate the way the docker plugin redefines stage. 
-However, the solution is pretty simple. Just add:
+The docker plugin redefines `stage` in the `Docker` scope, so the plugin's `stage` dependency on `swagger` does not apply there. Add this to `build.sbt`:
 ```Scala
-(stage in Docker) <<= (stage in Docker).dependsOn(swagger)
+Docker / stage := (Docker / stage).dependsOn(swagger).value
 ```
 
 #### How to hide an endpoint?
@@ -256,7 +239,7 @@ The entire file can be skipped by adding `### SkipFileForDocs ###` at the beginn
 
 Alternatively, the routes file can be split into multiple files, so that you can skip practically only a part of the file.
 
-https://www.playframework.com/documentation/ja/2.4.x/SBTSubProjects
+https://www.playframework.com/documentation/3.0.x/sbtSubProjects
 
 ```
 ### SkipFileForDocs ###
@@ -295,7 +278,7 @@ swaggerRoutesFile := "my-routes"
 
 or if you took the [alternative setup](docs/AlternativeSetup.md)
 ```scala
-SwaggerSpecGenerator(domainPackage).generate("myRoutes.routes")
+SwaggerSpecGenerator(modelQualifier = PrefixDomainModelQualifier(domainPackage)).generate("myRoutes.routes")
 ```
 
 #### How do I change the location of the swagger documentation in the packaged app?
@@ -401,7 +384,7 @@ Then on your routes file or root swagger file you can use some markup like the o
   host: ${API_HOST}
 ```
 
-This way when the swagger file is parsed the markup `${API_HOST}` is going to be substituted by the content of the environent variable `API_HOST`.
+This way when the swagger file is parsed the markup `${API_HOST}` is going to be substituted by the content of the environment variable `API_HOST`.
 
 #### How to support OpenAPI/Swagger v3
 You can produce swagger files for v3 by setting the flag:
@@ -527,6 +510,8 @@ addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0")
 libraryDependencies +=  "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"
 ```
 
+Note: On Scala 3.6 and later, Scaladoc descriptions require a play-swagger version later than 3.1.7.
+
 For example, a case class might be written as follows.
 
 ```scala
@@ -560,6 +545,8 @@ By default, an `Option[T]` field or parameter is rendered in the OpenAPI spec as
 In some cases, advertising these fields as nullable is not desirable. You can disable rendering `Option[T]` fields as nullable by setting the `swaggerOptionAsNullable` flag to `false` in `build.sbt`.
 The fields then simply get rendered as optional but *not* nullable.
 
+This setting requires a play-swagger version later than 3.1.7.
+
 Note: `Option[T]` items within a collection (e.g. `Seq[Option[T]]`) are still rendered as nullable, because JSON serialization typically renders `None` items in a collection as `null`.
 
 ```sbt
@@ -576,8 +563,8 @@ SwaggerSpecGenerator(
 
 #### Is play java supported? 
 
-you can generate models definition from java POJO by setting the flag:
+You can generate model definitions from Java POJOs by setting the flag:
 ```
-  playJava := true
+  swaggerPlayJava := true
 ```
-The flag only suport PlayJava 2.7 and 2.8
+play-swagger then uses Jackson to read the properties of your Java classes.
