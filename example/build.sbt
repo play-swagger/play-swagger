@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
   guice,
   "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test,
   "org.webjars" % "swagger-ui" % "5.9.0", // play-swagger ui integration
-  "com.beachape" %% "enumeratum" % "1.9.8"
+  "com.beachape" %% "enumeratum" % "1.9.9"
 )
 
 scalacOptions ++= Seq("-Xlint:unused")
